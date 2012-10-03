@@ -2,6 +2,7 @@
 
 load('./hirsute_generator.rb')
 load('./hirsute_fixed.rb')
+load('./hirsute_collection.rb')
 
 module Hirsute
   class Template
@@ -37,7 +38,7 @@ module Hirsute
       
       # makes n objects based on template and returns them as an array
       def *(count)
-        ret_val = Array.new
+        ret_val = Collection.new
         (1..count).each {|idx| ret_val << make}
         ret_val
       end
