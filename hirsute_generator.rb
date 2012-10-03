@@ -8,4 +8,18 @@ module Hirsute
        ""
      end
   end
+  
+  #in this case, the definition is fixed, so no need for dynamic construction
+  class CompoundGenerator < Generator
+      
+      def initialize(generators)
+         @generators = generators
+      end
+      
+      def generate
+         ret_val = ""
+         @generators.each {|gen| ret_val = ret_val + gen.generate.to_s}
+         ret_val
+      end
+  end
 end
