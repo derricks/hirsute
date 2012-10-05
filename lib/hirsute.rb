@@ -3,7 +3,8 @@
 #   ruby hirsute.rb <filename>
 # if filename is not specified, you can use this in irb to define language items
 
-load('./hirsute_template.rb')
+load('lib/hirsute_template.rb')
+load('lib/hirsute_collection.rb')
 
 @objToTemplates = Hash.new
 
@@ -32,7 +33,34 @@ def a(objName, &block)
   template
 end
 
+# alias for each, really, but with a naming consistent with the rest of the language
+def for_all(collection,&block) 
+    collection.each(&block)
+end
 
+# returns a Collection of n elements that return true from the block. Note: this might return less.
+def find(n,collection,&block)
+end
+  
 
+# given an array of probabilities (as .1, .2, etc.), return the index of the item where the probability fell
+# This is a finite discrete distribution http://en.wikipedia.org/wiki/Pseudo-random_number_sampling#Finite_discrete_distributions
+def integer_from_histogram(probabilities)
+    high_end = 1
+    random_value = rand
+    
+    ret_val = probabilities.each_index do |idx|
+      cur_prob = probabilities[idx]
+      
+      if random_value <= high_end && random_value > high_end - cur_prob
+          break idx
+      else
+          high_end = high_end - cur_prob
+          next
+      end
+    end
+    
+    ret_val   
+end
 
 load ARGV[0] if ARGV[0]

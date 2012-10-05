@@ -14,8 +14,9 @@ module Hirsute
           @collection.each(&block)
        end
        
-       def <<(other)
-          @collection << other
-       end
+       def <<(other);  @collection << other;  end;
+       
+       def length; @collection.length; end;
+          
    end
 end

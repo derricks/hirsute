@@ -1,8 +1,8 @@
 # Defines the Template class that forms the foundation of Hirsute object definitions
 
-load('./hirsute_generator.rb')
-load('./hirsute_fixed.rb')
-load('./hirsute_collection.rb')
+load('lib/hirsute_generator.rb')
+load('lib/hirsute_fixed.rb')
+load('lib/hirsute_collection.rb')
 
 module Hirsute
   class Template
