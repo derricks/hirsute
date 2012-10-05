@@ -1,5 +1,7 @@
 ## some simple exercises of the hirsute system
 
+# storage :mysql
+
 a('user') {
   has  "user_id" => counter(12),
        "comment" => "some random text",

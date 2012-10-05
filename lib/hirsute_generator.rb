@@ -22,4 +22,15 @@ module Hirsute
          ret_val
       end
   end
+  
+  # convenience class for literal values (especially strings and nil) 
+  class LiteralGenerator < Generator
+      def initialize(value)
+        @value = value
+      end
+      
+      def generate
+        @value
+      end
+   end
 end

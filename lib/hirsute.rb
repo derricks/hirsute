@@ -8,6 +8,10 @@ load('lib/hirsute_collection.rb')
 
 @objToTemplates = Hash.new
 
+def storage(storage_system)
+   @storage = storage_system
+end
+
 # you can use an or a as your definition
 def an(objName,&block)
   a(objName) {block.call}

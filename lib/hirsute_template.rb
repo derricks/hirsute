@@ -42,11 +42,7 @@ module Hirsute
         def counter(startingPoint)
             gen_make_generator {@current = startingPoint;def generate; cur_current = @current; @current = @current + 1; cur_current; end;}
         end
-      
-        def static_text(text)
-           gen_make_generator {@text = text; def generate; @text; end;}
-        end
-        
+              
         def combination(*args)
            CompoundGenerator.new(args.map {|item| generator_from_value(item)})
         end
@@ -65,10 +61,9 @@ module Hirsute
            if value.is_a? Generator
               value
            else
-              static_text(value.to_s)
+              LiteralGenerator.new(value)
            end
         end
-           
             
   end
 end
