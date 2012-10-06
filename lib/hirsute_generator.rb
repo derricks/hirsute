@@ -16,6 +16,7 @@ module Hirsute
          @generators = generators
       end
       
+      # return the joined response of each embedded generator
       def generate
          ret_val = ""
          @generators.each {|gen| ret_val = ret_val + gen.generate.to_s}
