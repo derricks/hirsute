@@ -5,6 +5,7 @@
 
 load('lib/hirsute_template.rb')
 load('lib/hirsute_collection.rb')
+load('lib/hirsute_fixed.rb')
 
 @objToTemplates = Hash.new
 
@@ -21,6 +22,14 @@ end
 # dummy objects
 def a(objName, &block)
   
+  # define a class with the given name. This is so that we can store class instance variables,
+  # present more readable information to users, and so forth. Basically a('thing') should create 
+  # a class named Thing that can be used elsewhere
+  # do this here because template.instance_eval will add to this class if there's an is_stored_in method
+  # used
+  objClass = Class.new(Hirsute::Fixed)
+  objClassName = Kernel.const_set(objName.capitalize.to_sym,objClass)
+  
   # construct a new object, set self to that object
   # then yield to the block, which will call methods defined in Template
   template = Hirsute::Template.new(objName)
@@ -34,6 +43,7 @@ def a(objName, &block)
   # define_method objName -> template
   self.class.send(:define_method,objName.to_sym) {template}
   
+  
   template
 end
 
@@ -44,6 +54,10 @@ end
 
 # returns a Collection of n elements that return true from the block. Note: this might return less.
 def find(n,collection,&block)
+end
+
+def storage(storageSymbol)
+  @storage = storageSymbol
 end
   
 

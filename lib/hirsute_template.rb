@@ -1,11 +1,16 @@
 # Defines the Template class that forms the foundation of Hirsute object definitions
 
 load('lib/hirsute_generator.rb')
+load('lib/hirsute_make_generators.rb')
 load('lib/hirsute_fixed.rb')
 load('lib/hirsute_collection.rb')
+load('lib/hirsute_utils.rb')
 
 module Hirsute
   class Template
+     include GeneratorMakers
+     include Support
+     
       public
         def initialize(templateName)
            @templateName = templateName
@@ -23,28 +28,25 @@ module Hirsute
            # do this in a loop to have special handling for different types
            fieldDefs.each_pair {|key,value|  @fieldDefs[key] = generator_from_value(value)}
         end
+        
+        # is_stored_in defines some meaningful name for where a generated object should be stored
+        # in the final output (e.g., the name of a database table)
+        def is_stored_in(storageName)
+          class_for_name(@templateName).class_eval {@storage_name = storageName;attr_reader :storage_name;}
+        end
       
         # makes an object based on this template definition. the 
         def make
-            obj = Fixed.new
+            obj = class_for_name(@templateName).new
             @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate)}
             obj
         end
       
         # makes n objects based on template and returns them as an array
         def *(count)
-          ret_val = Collection.new
+          ret_val = Collection.new(@templateName)
           (1..count).each {|idx| ret_val << make}
           ret_val
-        end
-      
-        # generator methods. see note above has for why they're defined here
-        def counter(startingPoint)
-            gen_make_generator {@current = startingPoint;def generate; cur_current = @current; @current = @current + 1; cur_current; end;}
-        end
-              
-        def combination(*args)
-           CompoundGenerator.new(args.map {|item| generator_from_value(item)})
         end
         
      private      

@@ -8,5 +8,10 @@ module Hirsute
       def set(field,value)
          @fields[field] = value
       end
+      
+      def get(field); @fields[field];end
+      
+      def fields; @fields.keys; end
+      
   end
 end

@@ -1,6 +1,6 @@
 ## some simple exercises of the hirsute system
 
-# storage :mysql
+storage :mysql
 
 a('user') {
   has  "user_id" => counter(12),
