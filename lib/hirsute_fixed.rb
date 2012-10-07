@@ -2,6 +2,8 @@
 module Hirsute
   class Fixed
       
+      attr_accessor :fields
+      
       # though Hirsute can use set and get within itself, set also configures attribute accessors
       # for the specified field, thus allowing more user-friendly management of Hirsute objects
       def set(field,value)

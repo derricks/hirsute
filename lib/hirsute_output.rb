@@ -10,17 +10,21 @@ module Hirsute
        _start
     end
     
+    def _start;end;
+    
     # cleanup work
     def finish
       _finish
     end
+    
+    def _finish;end;
     
     # external method telling 
     def output(collection)
       #derive file name from class of object
       
       begin
-        @file = File.open(collection.objectName + '.load','w')
+        @file = File.open(collection.object_name + '.load','w')
         start
       
         collection.each {|item| _outputItem(item)}
@@ -49,11 +53,11 @@ module Hirsute
      end
        
      def _outputItem(item)
-         insert_string = "INSERT INTO #{item.class.storage_name} ("
+         insert_string = "INSERT INTO #{item.storage_name} ("
          sql_columns = item.class.fields.map{|col_name| "'" + col_name + "'"}
          insert_string = insert_string + sql_columns.join(",") + ") VALUES ("
          
-         sql_values = item.fields.map{|fieldName| object_value_to_sql_literal(item.get(fieldName))}
+         sql_values = item.class.fields.map{|fieldName| object_value_to_sql_literal(item.get(fieldName))}
          insert_string = insert_string + sql_values.join(",") + ");\n"
          
          @file.puts(insert_string)

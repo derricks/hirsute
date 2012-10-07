@@ -6,6 +6,9 @@
 load('lib/hirsute_template.rb')
 load('lib/hirsute_collection.rb')
 load('lib/hirsute_fixed.rb')
+load('lib/hirsute_output.rb')
+
+@outputters = {:mysql => Hirsute::MySQLOutputter.new}
 
 @objToTemplates = Hash.new
 
@@ -58,6 +61,18 @@ end
 
 def storage(storageSymbol)
   @storage = storageSymbol
+end
+
+# tells Hirsute to output the given collection to the given storage system (or to generate the files necessary for that)
+# if no storage symbol is passed in, this will use 
+def finish(collection,storageSymbol = nil)
+  raise "No storage defined. Use 'storage <symbol>' to define a storage type" if @storage.nil? && storageSymbol.nil?
+  
+  if storageSymbol.nil?
+    @outputters[@storage].output(collection)
+  else
+    @outputters[storageSymbol].output(collection)
+  end
 end
   
 
