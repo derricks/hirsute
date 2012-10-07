@@ -27,6 +27,13 @@ module Hirsute
          
            # do this in a loop to have special handling for different types
            fieldDefs.each_pair {|key,value|  @fieldDefs[key] = generator_from_value(value)}
+           
+           # and while we're at it, we might as well set up the fields list in the class of the constructed object
+           class_for_name(@templateName).class_eval {
+             @fields = fieldDefs.keys
+             attr_reader :fields
+             @fields.each {|item| attr_accessor item.to_sym}
+           }
         end
         
         # is_stored_in defines some meaningful name for where a generated object should be stored
