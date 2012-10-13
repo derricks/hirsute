@@ -29,6 +29,11 @@ module Hirsute
       end
        
        def length; @collection.length; end;
+       
+       # so that collections can be used with the one_of generator
+       def choice
+         @collection.choice
+       end
           
    end
 end

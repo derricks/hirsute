@@ -66,4 +66,14 @@ class TestHirsute < Test::Unit::TestCase
       assert(coll.length == 1)
     end
   end
+  
+  def testCollectionChoice
+    coll = Hirsute::Collection.new("String")
+    coll << "a"
+    coll << "b"
+    coll << "c"
+    
+    str = one_of(coll).generate
+    assert(str=='a' || str == 'b' || str == 'c')
+  end
 end
