@@ -29,15 +29,26 @@ module Hirsute
            fieldDefs.each_pair {|key,value|  @fieldDefs[key] = generator_from_value(value)}
            
            # define accessors for each of the fields defined in the template 
-           class_for_name(@templateName).class_eval {
-             fieldDefs.keys.each {|item| attr_accessor item.to_sym}
-           }
+           hashToFields(fieldDefs)
            
            # add a fields field to the class _instance_ (note that in has, no instances of the object itself yet exist)
            class_for_name(@templateName).instance_eval {
              @fields = fieldDefs.keys
              def fields; @fields; end;
            }
+        end
+        
+        # Allows a template to have transient objects that are not going to be persisted to the data store
+        # In that case, they get added as fields within the template, but get stored separately so that they're
+        # not included in make
+        def transients(transients)
+          @transients = transients
+          hashToFields(transients)
+          
+          class_for_name(@templateName).instance_eval {
+            @transients = transients.keys
+            def transients;@transients;end;
+          }
         end
         
         # is_stored_in defines some meaningful name for where a generated object should be stored
@@ -50,6 +61,8 @@ module Hirsute
         def make
             obj = class_for_name(@templateName).new
             @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate)}
+            
+            @transients.each_pair{|transientName,generator| obj.set(transientName,generator.generate)}
             obj
         end
       
@@ -62,13 +75,6 @@ module Hirsute
         
      private      
       
-        # generic method for making a generator based off of a block. useful for simple cases.
-        def gen_make_generator(&block)
-           gen = Generator.new
-           gen.instance_eval(&block)
-           gen
-        end
-        
         # refactored logic for deriving generator from a value
         def generator_from_value(value)
            if value.is_a? Generator
@@ -77,6 +83,15 @@ module Hirsute
               LiteralGenerator.new(value)
            end
         end
+        
+        # given a hash of values, add attr_accessors for each key
+        # define accessors for each of the fields defined in the template 
+        def hashToFields(hash)
+          class_for_name(@templateName).class_eval {
+            hash.keys.each {|item| attr_accessor item.to_sym}
+          }
+        end
+        
             
   end
 end
