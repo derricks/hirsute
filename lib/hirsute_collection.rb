@@ -10,7 +10,7 @@ module Hirsute
        
        attr_reader :object_name
        
-       def initialize(objectName)
+       def initialize(objectName=nil)
           @object_name = objectName # defines the object type kept in this collection
           @collection = Array.new
        end
@@ -20,6 +20,9 @@ module Hirsute
        end
        
        def <<(element)
+          # allows for deferred definition of type
+          
+           @object_name = element.class.name if !@object_name
            raise "Only objects of type #{@object_name} can be stored in this collection" if element.class != class_for_name(@object_name)    
            
            @collection << element

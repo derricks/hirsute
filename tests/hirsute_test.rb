@@ -3,6 +3,7 @@
 require 'test/unit'
 require 'lib/hirsute.rb'
 require 'lib/hirsute_make_generators.rb'
+require 'lib/hirsute_collection.rb'
 
 class TestHirsute < Test::Unit::TestCase
   include Hirsute::GeneratorMakers
@@ -43,5 +44,26 @@ class TestHirsute < Test::Unit::TestCase
     
     line = gen.generate() # should have wrapped around
     assert(line == 'Derrick')
+  end
+  
+  def testCollectionCreationWithObject
+    coll = Hirsute::Collection.new("String")
+    begin
+      coll << 3
+      flunk "Collection should not allow an inconsistent type"
+    rescue Exception => e
+      assert(coll.length == 0)
+    end
+  end
+  
+  def testCollectionCreationWithoutObject
+    coll = Hirsute::Collection.new
+    coll << 3
+    begin
+      coll << "test"
+      flunk "Strings should not be allowed in a collection created as an integer"
+    rescue
+      assert(coll.length == 1)
+    end
   end
 end
