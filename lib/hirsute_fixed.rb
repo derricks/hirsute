@@ -7,8 +7,8 @@ module Hirsute
       # though Hirsute can use set and get within itself, set also configures attribute accessors
       # for the specified field, thus allowing more user-friendly management of Hirsute objects
       def set(field,value)
-         set_method = (field + "=").to_sym
-         m = self.method((field + "=").to_sym)
+         set_method = (field.to_s + "=").to_sym
+         m = self.method((field.to_s + "=").to_sym)
          m.call value
       end
       
