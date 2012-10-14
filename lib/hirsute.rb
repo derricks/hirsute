@@ -79,21 +79,7 @@ end
 # given an array of probabilities (as .1, .2, etc.), return the index of the item where the probability fell
 # This is a finite discrete distribution http://en.wikipedia.org/wiki/Pseudo-random_number_sampling#Finite_discrete_distributions
 def integer_from_histogram(probabilities)
-    high_end = 1
-    random_value = rand
-    
-    ret_val = probabilities.each_index do |idx|
-      cur_prob = probabilities[idx]
-      
-      if random_value <= high_end && random_value > high_end - cur_prob
-          break idx
-      else
-          high_end = high_end - cur_prob
-          next
-      end
-    end
-    
-    ret_val   
+  Hirsute::Support.integer_from_histogram(probabilities)
 end
 
 load ARGV[0] if ARGV[0]

@@ -1,9 +1,12 @@
 # the various commands that make Hirsute generators. This mostly just keeps these methods isolated
 
 load('lib/hirsute_generator.rb')
+require('lib/hirsute_utils.rb')
 
 module Hirsute
   module GeneratorMakers
+    include Hirsute::Support
+    
     public
       def counter(startingPoint)
           gen_make_generator {@current = startingPoint;def generate; cur_current = @current; @current = @current + 1; cur_current; end;}
@@ -14,8 +17,19 @@ module Hirsute
       end
     
       # pick one of the itmes in the list randomly
-      def one_of (list)
-        gen_make_generator {@options = list; def generate; @options.choice; end;}
+      def one_of (list,histogram = nil)
+        if !histogram
+          gen_make_generator {@options = list; def generate; @options.choice; end;}
+        else
+          gen_make_generator {
+            @options = list
+            @histogram = histogram
+            def generate
+              n = integer_from_histogram(@histogram)
+              @options[n]
+            end
+          }
+        end
       end
       
       # reads from file, using each line as the result of the generation

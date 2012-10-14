@@ -25,6 +25,19 @@ class TestHirsute < Test::Unit::TestCase
     
   end
   
+  def testOneOfWithHistogram
+    results = []
+    list = ["a","b","c"]
+    histogram = [0.9,0.05,0.05]
+    gen = one_of(list,histogram)
+    (1..1000).each do |i|
+      results << gen.generate
+    end
+    
+    a_count = (results.select {|item| item == 'a'}).length
+    assert(a_count > 855 && a_count < 945)
+  end
+  
   def testOneOfGenerator
     
     domains = ["gmail.com","yahoo.com","ea.com"]
