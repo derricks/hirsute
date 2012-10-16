@@ -76,11 +76,11 @@ module Hirsute
      private      
       
         # refactored logic for deriving generator from a value
-        def generator_from_value(value)
+        def generator_from_value(value,&block)
            if value.is_a? Generator
               value
            else
-              LiteralGenerator.new(value)
+              LiteralGenerator.new(value,block)
            end
         end
         
