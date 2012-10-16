@@ -89,4 +89,11 @@ class TestHirsute < Test::Unit::TestCase
     str = one_of(coll).generate
     assert(str=='a' || str == 'b' || str == 'c')
   end
+  
+  def testPostGenerateBlockExecution
+    list = ['abc','apple','asparagus']
+    gen = one_of(list) {|value| value[0,1]}
+    result = gen.generate
+    assert(result == 'a')
+  end
 end

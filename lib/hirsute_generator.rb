@@ -6,21 +6,37 @@ require ('lib/hirsute_utils.rb')
 module Hirsute
   class Generator
     include Hirsute::Support
-           
+         
+     def initialize(block)
+       @finalizer = block
+     end
+     
+     def finish(value)
+       if @finalizer
+         @finalizer.call(value)
+       else
+         value
+       end
+     end
+     
      def generate
-       ""
+       finish(_generate)
+     end
+     
+     def _generate
      end
   end
   
   #in this case, the definition is fixed, so no need for dynamic construction
   class CompoundGenerator < Generator
       
-      def initialize(generators)
+      def initialize(generators,block)
          @generators = generators
+         super(block)
       end
       
       # return the joined response of each embedded generator
-      def generate
+      def _generate
          ret_val = ""
          @generators.each {|gen| ret_val = ret_val + gen.generate.to_s}
          ret_val
@@ -29,11 +45,12 @@ module Hirsute
   
   # convenience class for literal values (especially strings and nil) 
   class LiteralGenerator < Generator
-      def initialize(value)
+      def initialize(value,block)
         @value = value
+        super(block)
       end
       
-      def generate
+      def _generate
         @value
       end
    end
@@ -41,13 +58,14 @@ module Hirsute
    class ReadFromFileGenerator < Generator
      
      public
-       def initialize(file_name,algorithm)
+       def initialize(file_name,algorithm,block)
          @file_name = file_name
          @file = File.open @file_name
          @algorithm = algorithm
+         super(block)
        end
        
-       def generate
+       def _generate
          if @algorithm == :markov
            advance_count = rand(100)
            read_line_at(advance_count)

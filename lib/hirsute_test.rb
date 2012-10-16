@@ -3,9 +3,9 @@
 storage :mysql
 
 a('user') {
-  has  "user_id" => counter(12),
-       "comment" => "some random text",
-       "email"   => combination("hirsute",counter(100),"@test.com");
+  has  :user_id => counter(12),
+       :comment => "some random text",
+       :email   => combination("hirsute",counter(100),"@test.com");
   is_stored_in "simcity_user";
 }
 
