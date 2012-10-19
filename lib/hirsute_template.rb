@@ -60,9 +60,13 @@ module Hirsute
         # makes an object based on this template definition. the 
         def make
             obj = class_for_name(@templateName).new
-            @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate)}
+            if @fieldDefs
+              @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate)}
+            end
             
-            @transients.each_pair{|transientName,generator| obj.set(transientName,generator.generate)}
+            if @transients
+              @transients.each_pair{|transientName,generator| obj.set(transientName,generator.generate)}
+            end
             obj
         end
       
