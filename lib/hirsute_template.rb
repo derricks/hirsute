@@ -15,7 +15,9 @@ module Hirsute
         def initialize(templateName)
            @templateName = templateName
         end
-            
+        
+        attr_reader :templateName
+        
         # has takes a hash of field name -> field generator definitions and stores them
         # for later use
         # remembering that the syntax is 
@@ -36,6 +38,17 @@ module Hirsute
              @fields = fieldDefs.keys
              def fields; @fields; end;
            }
+        end
+        
+        # Define a set of Constraint objects that act as data integrity enforcers. For instance, if a field needs to be unique.
+        # Hash is defined as field_name, requirement type
+        # While these are defined as part of this class, they're actually copied over to the collection class, since that's who needs
+        # to enforce the constraint
+        def requires(requirements)
+          class_for_name(@templateName).instance_eval {
+            @requirements = requirements
+            def requirements; @requirements; end;
+          }
         end
         
         # Allows a template to have transient objects that are not going to be persisted to the data store

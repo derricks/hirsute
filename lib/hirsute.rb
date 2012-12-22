@@ -55,9 +55,13 @@ def a(objName, &block)
   template
 end
 
-# alias for each, really, but with a naming consistent with the rest of the language
-def for_all(collection,&block) 
-    collection.each(&block)
+# iterates over every object of the specified type across any collection holding that type
+# usage: foreach user {|cur_user|}
+# if you only want to iterate over one collection, use that collection's each method
+def foreach(objTemplate)
+  #find every collection that has registered for this type of object (in the call you get the template)
+  colls = Hirsute::Collection.collections_holding_object(objTemplate.templateName)
+  colls.each {|coll| coll.each {|item| yield item if block_given?}}
 end
 
 # returns a Collection of n elements that return true from the block. Note: this might return less.

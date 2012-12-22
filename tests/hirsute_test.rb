@@ -96,4 +96,20 @@ class TestHirsute < Test::Unit::TestCase
     result = gen.generate
     assert(result == 'a')
   end
+  
+  # ensure that when you create a collection for an object, that it registers itself as a holder of that object type
+  def testCollectionsRegisterForObject
+    objName = 'testObj'
+    
+    #setup, copied from hirsute.rb
+    objClass = Class.new(Hirsute::Fixed)
+    objClassName = Kernel.const_set(objName.capitalize.to_sym,objClass)
+    
+    template = Hirsute::Template.new(objName)
+    
+    coll1 = template * 2
+    coll2 = template * 3
+    all_colls = Hirsute::Collection.collections_holding_object(objName)
+    assert(all_colls.length == 2)
+  end
 end

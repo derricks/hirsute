@@ -11,7 +11,9 @@ a('user') {
 
 users = user * 5
 
-puts users.inspect
+foreach user {|cur_user|
+  puts cur_user.user_id  
+}
 
 finish users
 
