@@ -21,12 +21,12 @@ The Language
     }
 </pre></code>
     
-* has - within a template definition, defines the set of fields for that template and the generators that specify them. See below for a list of generators.
+* has - within a template definition, defines the set of fields for that template and the generators that specify them. See below for a list of generators. Note: The first ield => generator pair must be on the same line as has
 
 <code><pre>
     a('user') {
-        has
-            :user_id => 1
+        has :user_id => 1,
+            :is_online => false
     }
 </pre></code>
 
