@@ -8,12 +8,22 @@ module Hirsute
     include Hirsute::Support
     
     public
+      # A generator that increments values from a starting point. Good for IDs
       def counter(startingPoint,&block)
           gen_make_generator(block) {@current = startingPoint;def _generate; cur_current = @current; @current = @current + 1; cur_current; end;}
       end
           
+      # A generator that combines all the generators passed in.
       def combination(*args,&block)
          CompoundGenerator.new(args.map {|item| generator_from_value(item)},block)
+      end
+      
+      # given a list of generators,  pick between 1 and n of them and return a CompoundGenerator based off the subset
+      def subset(*args,&block)
+        count = 1 + rand(args.length - 1)
+        args_subset = args[1..count]
+        
+        CompoundGenerator.new(args_subset.map{|item| generator_from_value(item)},block)
       end
     
       # pick one of the itmes in the list randomly
