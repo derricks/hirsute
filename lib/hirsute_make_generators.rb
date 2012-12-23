@@ -20,10 +20,16 @@ module Hirsute
       
       # given a list of generators,  pick between 1 and n of them and return a CompoundGenerator based off the subset
       def subset(*args,&block)
-        count = 1 + rand(args.length - 1)
-        args_subset = args[1..count]
-        
-        CompoundGenerator.new(args_subset.map{|item| generator_from_value(item)},block)
+        gen_make_generator(block) {
+          @generators = args.map {|item| generator_from_value(item)}
+          @block = block
+          def _generate
+            count = rand(@generators.length)
+            subset = @generators[0..count]
+
+            CompoundGenerator.new(subset,@block)
+          end
+        }
       end
     
       # pick one of the itmes in the list randomly

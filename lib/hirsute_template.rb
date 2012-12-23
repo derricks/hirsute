@@ -92,15 +92,6 @@ module Hirsute
         
      private      
       
-        # refactored logic for deriving generator from a value
-        def generator_from_value(value,&block)
-           if value.is_a? Generator
-              value
-           else
-              LiteralGenerator.new(value,block)
-           end
-        end
-        
         # given a hash of values, add attr_accessors for each key
         # define accessors for each of the fields defined in the template 
         def hashToFields(hash)

@@ -16,6 +16,6 @@ a('bottle') {
   is_stored_in 'bottles'
      
 }
-bottles = bottle * 3
+bottles = bottle * 100
 
 finish bottles
