@@ -1,0 +1,11 @@
+# A sample data definition for a fictional wine cellar management application
+# The basic model is:
+#    bottle - canonical form of a wine bottle description
+#    user - a user of the system
+#    cellar - a collection of bottles
+#    tasting_note - one user's perceptions of a bottle (which may or may not be in the user's cellar)
+a('bottle') {
+  has :bottle_id => counter(1)
+}
+
+bottles = bottle * 3
