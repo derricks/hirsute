@@ -2,6 +2,7 @@
 # why not just an array? because eventually this might need to deal with objects in a text file for memory purposes, but I want to provide a consistent interface
 # in the short-term though, just wrap an array
 require('lib/hirsute_utils.rb')
+require('lib/hirsute_template.rb')
 
 module Hirsute
   
@@ -40,7 +41,10 @@ module Hirsute
        
        def <<(element)
           # allows for deferred definition of type
-          
+           if element.kind_of? Hirsute::Template
+             self.<<(element.make)
+             return
+           end
            if !@object_name
              @object_name = element.class.name
              Hirsute::Collection.registerCollectionForObject(self,@object_name)

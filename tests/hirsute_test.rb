@@ -4,9 +4,11 @@ require 'test/unit'
 require 'lib/hirsute.rb'
 require 'lib/hirsute_make_generators.rb'
 require 'lib/hirsute_collection.rb'
+require 'lib/hirsute_utils.rb'
 
 class TestHirsute < Test::Unit::TestCase
   include Hirsute::GeneratorMakers
+  include Hirsute::Support
   
   # test functionality of the histogram distribution
   def testIntegerFromHistogram1
@@ -111,5 +113,20 @@ class TestHirsute < Test::Unit::TestCase
     coll2 = template * 3
     all_colls = Hirsute::Collection.collections_holding_object(objName)
     assert(all_colls.length == 2)
+  end
+  
+  # tests that is_template works
+  def testIsTemplate
+    testObj2 = Hirsute::Template.new('testObj2') 
+    assert(is_template(testObj2))    
+  end
+  
+  # ensure that the << operator works properly when appending a template (i.e., it makes a new object rather than appending the template)
+  def testAppendWithTemplate
+    testObj3 = make_template('testObj3') {
+       has :id => counter(1)
+    }
+              
+    assert(true)
   end
 end

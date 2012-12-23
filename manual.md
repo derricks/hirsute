@@ -11,8 +11,8 @@ By convention, hirsute files end in .hrs, but you can pass any file you'd like t
 
 The Language
 ------------
-* storage
-* a/an - defines a template for a type of object in the system. You can pass a block of Ruby code which will get executed
+* storage _type_ - the storage system to output to. Currently, only :mysql is supported
+* a/an('_type_') - defines a template for a type of object in the system. You can pass a block of Ruby code which will get executed
 
 <code><pre>
     a('user')
@@ -21,7 +21,7 @@ The Language
     }
 </pre></code>
     
-* has - within a template definition, defines the set of fields for that template and the generators that specify them. See below for a list of generators. Note: The first ield => generator pair must be on the same line as has
+* has _fields_ - within a template definition, defines the set of fields for that template and the generators that specify them. See below for a list of generators. Note: The first field => generator pair must be on the same line as has
 
 <code><pre>
     a('user') {
@@ -32,7 +32,7 @@ The Language
 
 * transients - within a template definition, defines elements that can be generated per object but won't be stored
 
-* is_stored_in - within a template definition, determines the storage destination (e.g., a database table)
+* is_stored_in _name_ - within a template definition, determines the storage destination (e.g., a database table)
 * _template_ * _n_ - create a collection of n objects generated from the template definition.
 * _collection_ << _template_ - create a new object from the template recipe and append it to the collection. Note: collections can only contain one type of object
 * _collection_ << _object_ - appends the given object to the given collection. Note: collections can only contain one type of object 
@@ -49,6 +49,8 @@ The Language
     end
 </pre></code>
 
+* finish(_collection_,_storage_) - output the specified collection based on the given storage type. If no storage type is given, it will use whatever was defined by the storage command
+
 Generators
 ----------
-These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will get used as the value for that field. Any time you define a generator, you can also pass it a block of code that will be called with the generated value.
+These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will get used as the value for that field. Any time you define a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into.

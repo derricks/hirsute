@@ -75,12 +75,6 @@ def finish(collection,storageSymbol = nil)
 end
   
 
-# given an array of probabilities (as .1, .2, etc.), return the index of the item where the probability fell
-# This is a finite discrete distribution http://en.wikipedia.org/wiki/Pseudo-random_number_sampling#Finite_discrete_distributions
-def integer_from_histogram(probabilities)
-  Hirsute::Support.integer_from_histogram(probabilities)
-end
-
 if ARGV[0]
   Dir::chdir(File::dirname(ABS_HRS_FILE))
   load ABS_HRS_FILE
