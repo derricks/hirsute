@@ -6,15 +6,23 @@
 #    tasting_note - one user's perceptions of a bottle (which may or may not be in the user's cellar)
 storage :mysql
 
+a('user') {
+  has :user_id => counter(1)
+}
 a('bottle') {
   has :bottle_id => counter(1),
       :producer => subset(
                      read_from_file('wine_cellar_winery_firsts.txt') {|text| text + " "},
                      read_from_file('wine_cellar_winery_seconds.txt') {|text| text + " "},
-                     read_from_file('wine_cellar_winery_thirds.txt') {|text| text + " "}) {|result| result.strip}
+                     read_from_file('wine_cellar_winery_thirds.txt') {|text| text + " "}) {|result| result.strip},
+      :vintage => one_of([1960,1970,1980,1990,2000],[0.05,0.05,0.2,0.4,0.3]) {|result| result + rand(9)},
+      :grapes => subset(read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
+                        read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
+                        read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
+                        read_from_file('wine_cellar_grapes.txt') {|text| text + ","}) {|all_grapes| all_grapes[0...all_grapes.length]},
+      :country => one_of(['France','Germany','Italy','Austria','United States'])
                      
   is_stored_in 'bottles'
-     
 }
 bottles = bottle * 100
 
