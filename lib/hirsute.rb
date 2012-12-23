@@ -12,6 +12,9 @@ load('lib/hirsute_template.rb')
 load('lib/hirsute_collection.rb')
 load('lib/hirsute_fixed.rb')
 load('lib/hirsute_output.rb')
+load('lib/hirsute_utils.rb')
+
+include Hirsute::Support
 
 @outputters = {:mysql => Hirsute::MySQLOutputter.new}
 
@@ -30,21 +33,8 @@ end
 # dummy objects
 def a(objName, &block)
   
-  # define a class with the given name. This is so that we can store class instance variables,
-  # present more readable information to users, and so forth. Basically a('thing') should create 
-  # a class named Thing that can be used elsewhere
-  # do this here because template.instance_eval will add to this class if there's an is_stored_in method
-  # used
-  objClass = Class.new(Hirsute::Fixed)
-  objClassName = Kernel.const_set(objName.capitalize.to_sym,objClass)
-  
-  # construct a new object, set self to that object
-  # then yield to the block, which will call methods defined in Template
-  template = Hirsute::Template.new(objName)
-  if block_given?
-    template.instance_eval &block  
-  end
-  
+  template = make_template(objName,&block)
+
   @objToTemplates[objName] = template
   
   # this allows the client to do something like user * 5
