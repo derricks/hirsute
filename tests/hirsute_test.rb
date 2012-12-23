@@ -147,4 +147,12 @@ class TestHirsute < Test::Unit::TestCase
     # either line would have raised an exception if the collection thought it was an invalid type (see test above)
     assert(true)
   end
+  
+  def testNestedGenerators
+    template = make_template('testNestedGenerators') {
+      has :id => one_of([one_of([1,2,3]),one_of([4,5,6])])
+    }
+    obj = template.make
+    assert(obj.id == 1 || obj.id == 2 || obj.id == 3 || obj.id == 4 || obj.id == 5 || obj.id == 6)
+  end  
 end

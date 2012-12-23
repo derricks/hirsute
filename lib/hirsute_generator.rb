@@ -20,7 +20,13 @@ module Hirsute
      end
      
      def generate
-       finish(_generate)
+       result = _generate
+
+       # if a generator returns a generator, keep going down the chain
+       while result.kind_of? Generator
+         result = result.generate
+       end
+       finish(result)
      end
      
      def _generate
