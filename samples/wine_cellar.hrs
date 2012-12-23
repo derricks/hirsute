@@ -7,11 +7,11 @@
 storage :mysql
 
 a('bottle') {
-  has :bottle_id => counter(1)
+  has :bottle_id => counter(1),
       :producer => subset(
-                     read_from_file('samples/wine_cellar_winery_firsts.txt') {|text| text + " "},
-                     read_from_file('samples/wine_cellar_winery_seconds.txt') {|text| text + " "},
-                     read_from_file('samples/wine_cellar_winery_thirds.txt') {|text| text + " "}) {|result| result.strip}
+                     read_from_file('wine_cellar_winery_firsts.txt') {|text| text + " "},
+                     read_from_file('wine_cellar_winery_seconds.txt') {|text| text + " "},
+                     read_from_file('wine_cellar_winery_thirds.txt') {|text| text + " "}) {|result| result.strip}
                      
   is_stored_in 'bottles'
      
