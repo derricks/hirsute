@@ -121,12 +121,30 @@ class TestHirsute < Test::Unit::TestCase
     assert(is_template(testObj2))    
   end
   
+  def testCollectionRejectsDifferentObject
+    template1 = make_template('testCollectionRejectsDifferentObject1')
+    template2 = make_template('testCollectionRejectsDifferentObject2')
+    
+    coll1 = template1 * 2
+    
+    begin
+       coll1 << template2
+       assert(false)
+    rescue
+       assert(true)
+    end
+  end
+  
   # ensure that the << operator works properly when appending a template (i.e., it makes a new object rather than appending the template)
   def testAppendWithTemplate
     testObj3 = make_template('testObj3') {
        has :id => counter(1)
     }
-              
+     
+    coll = testObj3 * 1
+    coll << testObj3
+    
+    # either line would have raised an exception if the collection thought it was an invalid type (see test above)
     assert(true)
   end
 end
