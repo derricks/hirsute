@@ -4,8 +4,18 @@
 #    user - a user of the system
 #    cellar - a collection of bottles
 #    tasting_note - one user's perceptions of a bottle (which may or may not be in the user's cellar)
+storage :mysql
+
 a('bottle') {
   has :bottle_id => counter(1)
+      :producer => subset(
+                     read_from_file('wine_cellar_winery_firsts.txt') {|text| text + " "},
+                     read_from_file('wine_cellar_winery_seconds.txt') {|text| text + " "},
+                     read_from_file('wine_cellar_winery_thirds.txt') {|text| text + " "}) {|result| result.strip}
+                     
+  is_stored_in 'bottles'
+     
 }
-
 bottles = bottle * 3
+
+finish bottles
