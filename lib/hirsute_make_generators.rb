@@ -9,7 +9,7 @@ module Hirsute
     
     public
       # A generator that increments values from a starting point. Good for IDs
-      def counter(startingPoint,&block)
+      def counter(startingPoint=1,&block)
           gen_make_generator(block) {@current = startingPoint;def _generate; cur_current = @current; @current = @current + 1; cur_current; end;}
       end
           
