@@ -1,7 +1,7 @@
 Hirsute: The Manual
 ===================
 
-Hirsute is a Ruby DSL for defining rules that can be used to construct fake data sets. You can use these fake data sets for examples in an application, testing code against a "normal" (versus dev) database, or for generating data sets that can be used for load testing an application.
+Hirsute is a Ruby DSL for defining rules that yield fake data sets. You can use these fake data sets for examples in an application, testing code against a "normal" (versus dev) database, or for generating data sets that can be used for load testing an application.
 
 Usage
 -----
@@ -12,7 +12,7 @@ By convention, hirsute files end in .hrs, but you can pass any file you'd like t
 The Language
 ------------
 * storage _type_ - the storage system to output to. Currently, only :mysql is supported
-* a/an('_type_') - defines a template for a type of object in the system. You can pass a block of Ruby code which will get executed
+* a/an('_type_') - defines a template for a type of object in the system. You can pass a block of Ruby code which will get executed. Usually this will include _has_ and _is\_stored\_in_
 
 <code><pre>
     a('user')
@@ -21,20 +21,47 @@ The Language
     }
 </pre></code>
     
-* has _fields_ - within a template definition, defines the set of fields for that template and the generators that specify them. See below for a list of generators. Note: The first field => generator pair must be on the same line as has
+* has _fields_ - within a template definition, defines the set of fields for that template and the generators that will create the data in a specific instance. See below for a list of generators. Note: The first field => generator pair must be on the same line as _has_
 
 <code><pre>
     a('user') {
         has :user_id => 1,
-            :is_online => false
+            :is\_online => false
     }
 </pre></code>
 
 * transients - within a template definition, defines elements that can be generated per object but won't be stored
 
 * is\_stored\_in _name_ - within a template definition, determines the storage destination (e.g., a database table)
+
+<code><pre>
+    a('user') {
+        is\_stored\_in 'app\_users'
+    }
+</pre></code>
+
+* collection_of *objectType* - create an empty collection of the given object type. You might need to do this when creating mappings to other objects. Note: collections can only contain one type of object
+
+<code><pre>
+    users = collection_of user
+    users << user1
+</pre></code>
+
 * _template_ * _n_ - create a collection of n objects generated from the template definition.
-* _collection_ << _template_ - create a new object from the template recipe and append it to the collection. Note: collections can only contain one type of object
+
+<code><pre>
+    a('user')     
+    users = user * 5 # generates 5 users
+</pre></code>
+
+* _collection_ << _template_ - create a new object from the template recipe and append it to the collection.
+
+<code><pre>
+   a('user')
+   users = user * 6
+   users << user  
+ </pre></code>
+ 
 * _collection_ << _object_ - appends the given object to the given collection. Note: collections can only contain one type of object 
 * foreach _objectType_ - find every collection containing that type of object, and iterate through each one in turn. Takes a block that gets each item in turn
 
@@ -51,12 +78,7 @@ The Language
 
 * finish(_collection_,_storage_) - output the specified collection based on the given storage type. If no storage type is given, it will use whatever was defined by the storage command
 
-* collection_of *objectType* - create an empty collection of the given object type
-
-<code><pre>
-    users = collection_of user
-    users << user1
-</pre></code>
+* find 
 
 Generators
 ----------
