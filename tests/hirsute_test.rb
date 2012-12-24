@@ -165,4 +165,12 @@ class TestHirsute < Test::Unit::TestCase
     obj = template.make
     assert(obj.item.length <= 3 && obj.item.length > 0)
   end
+  
+  def testAppendCollectionToCollection
+    template = make_template('testAppendCollectionToCollection')
+    coll1 = template * 3
+    coll2 = template * 4
+    coll1 << coll2
+    assert(coll1.length == 7)
+  end
 end

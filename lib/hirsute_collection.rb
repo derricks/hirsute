@@ -45,6 +45,12 @@ module Hirsute
              self.<<(element.make)
              return
            end
+           
+           if element.kind_of? Hirsute::Collection
+              element.each {|item| self << item}
+              return
+           end
+           
            if !@object_name
              @object_name = element.class.name
              Hirsute::Collection.registerCollectionForObject(self,@object_name)
