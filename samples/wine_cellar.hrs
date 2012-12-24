@@ -39,10 +39,17 @@ a('cellar') {
   is_stored_in "cellars"
 }
 
+a('bottleCellar') {
+  has :cellar_id => 1, # this is set later
+      :bottle_id => 1,  # set later
+      :amount => one_of([1,5,12,24],[0.3,0.3,0.3,0.1]) {|count| count + rand(4)} # assume that people generally have around one or five instances of a bottle, less often a case
+  is_stored_in 'bottle_cellar'
+}
+
 bottles = bottle * 100
 
 # give each user a cellar
-cellars = collection 'cellar'
+cellars = collection_of cellar
 
 foreach user do |cur_user|
   user_cellar = cellar.make
@@ -50,6 +57,28 @@ foreach user do |cur_user|
   cellars << user_cellar
 end
 
+# now give each cellar some number of bottles
+bottleCellars = collection_of bottleCellar
+
+foreach cellar do |cur_cellar|
+  # a cellar might have 10, 20, or 40 different bottles, with some flux
+  count = random_item_with_histogram([10,20,40],[0.2,0.6,0.2])
+  count = count + rand(10)
+  
+  (1..count).each do |amount|
+    cur_bottle = bottles.choice
+    
+    cur_bottle_cellar = bottleCellar.make
+    cur_bottle_cellar.bottle_id = cur_bottle.bottle_id
+    cur_bottle_cellar.cellar_id = cur_cellar.cellar_id
+    
+    bottleCellars << cur_bottle_cellar
+  end
+end
+
+
+
 finish users
 finish bottles
 finish cellars
+finish bottleCellars
