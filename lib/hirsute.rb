@@ -78,6 +78,11 @@ end
 def collection(objectName)
   Hirsute::Collection.new(objectName)
 end
+
+# returns an empty collection of the specified template type
+def collection_of(template)
+  collection template.templateName
+end
   
 
 if ARGV[0]

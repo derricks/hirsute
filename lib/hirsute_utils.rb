@@ -28,6 +28,10 @@ module Hirsute
     
       ret_val   
    end
+   
+   def random_item_with_histogram(list,probabilities)
+     list[integer_from_histogram(probabilities)]
+   end
   
    def is_template(obj)
      obj.kind_of? Hirsute::Template
