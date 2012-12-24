@@ -46,6 +46,28 @@ a('bottleCellar') {
   is_stored_in 'bottle_cellar'
 }
 
+a('tastingNote') {
+  has :tasting_note_id => counter(1)
+      :description => combination(
+         subset(
+           read_from_file('wine_cellar_aromas.txt') {|text| text + ","},
+           read_from_file('wine_cellar_aromas.txt') {|text| text + ","},
+           read_from_file('wine_cellar_aromas.txt') {|text| text + ","},
+           read_from_file('wine_cellar_aromas.txt') {|text| text + ","},
+           read_from_file('wine_cellar_aromas.txt') {|text| text + ","},
+           read_from_file('wine_cellar_aromas.txt') {|text| text + ","}),
+         subset(
+           read_from_file('wine_cellar_flavors.txt') {|text| text + ","}),
+           read_from_file('wine_cellar_flavors.txt') {|text| text + ","}),
+           read_from_file('wine_cellar_flavors.txt') {|text| text + ","})
+         )
+      ),
+      :rating => one_of([1,2,3,4,5],[0.1,0.1,0.4,0.3,0.1]),
+      :bottle_id => 1, # filled in later
+      :user_id => 1    # filled in later
+      
+}
+
 bottles = bottle * 100
 
 # give each user a cellar
