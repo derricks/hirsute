@@ -95,7 +95,8 @@ module Hirsute
          line = ""
          (0...line_count).each do |idx|
            line = @file.gets
-           while line.strip != ""
+           
+           while line && line.strip != ""
              line = @file.gets
            end
            

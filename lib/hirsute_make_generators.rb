@@ -41,8 +41,7 @@ module Hirsute
             @options = list
             @histogram = histogram
             def _generate
-              n = integer_from_histogram(@histogram)
-              @options[n]
+              random_item_with_histogram(@options,@histogram)
             end
           }
         end
