@@ -95,6 +95,10 @@ module Hirsute
          line = ""
          (0...line_count).each do |idx|
            line = @file.gets
+           while line.strip != ""
+             line = @file.gets
+           end
+           
            if line.nil? # reached the end of the file
              reset_file
              line = @file.gets
