@@ -72,7 +72,7 @@ class TestHirsute < Test::Unit::TestCase
   end
   
   def testCollectionCreationWithoutObject
-    coll = Hirsute::Collection.new
+    coll = Hirsute::Collection.new('fixnum')
     coll << 3
     begin
       coll << "test"

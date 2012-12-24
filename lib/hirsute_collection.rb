@@ -29,7 +29,7 @@ module Hirsute
        
        attr_reader :object_name
        
-       def initialize(objectName=nil)
+       def initialize(objectName)
           @object_name = objectName # defines the object type kept in this collection
           Hirsute::Collection.registerCollectionForObject(self,objectName)
           @collection = Array.new

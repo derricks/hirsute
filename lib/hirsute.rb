@@ -73,6 +73,11 @@ def finish(collection,storageSymbol = nil)
     @outputters[storageSymbol].output(collection)
   end
 end
+
+# returns an empty collection
+def collection(objectName)
+  Hirsute::Collection.new(objectName)
+end
   
 
 if ARGV[0]
