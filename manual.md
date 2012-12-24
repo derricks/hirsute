@@ -32,7 +32,7 @@ The Language
 
 * transients - within a template definition, defines elements that can be generated per object but won't be stored
 
-* is_stored_in _name_ - within a template definition, determines the storage destination (e.g., a database table)
+* is\_stored\_in _name_ - within a template definition, determines the storage destination (e.g., a database table)
 * _template_ * _n_ - create a collection of n objects generated from the template definition.
 * _collection_ << _template_ - create a new object from the template recipe and append it to the collection. Note: collections can only contain one type of object
 * _collection_ << _object_ - appends the given object to the given collection. Note: collections can only contain one type of object 
@@ -51,6 +51,28 @@ The Language
 
 * finish(_collection_,_storage_) - output the specified collection based on the given storage type. If no storage type is given, it will use whatever was defined by the storage command
 
+* collection_of *objectType* - create an empty collection of the given object type
+
+<code><pre>
+    users = collection_of user
+    users << user1
+</pre></code>
+
 Generators
 ----------
-These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will get used as the value for that field. Any time you define a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into.
+These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will get used as the value for that field. Any time you define a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into, or add a separator between generated results.
+
+* one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. Note: Histogram must be the same length as options, and all the values must add up to 1.0
+
+* counter (startingValue) - keep an incrementing counter so that each new object created from the template gets the next value. Useful for ids and for making unique emails or screen names
+
+* combination (generators... ) - combines a variable amount of generators into one field. Results are concatenated together as strings
+
+* subset (generators... ) - combines some subset (determined randomly) of the first items in the list
+
+* read\_from\_file (filename,algorithm) - reads from a file to produce a value, wrapping around as needed. The default algorithm, :markov, skips ahead a random number of lines each time. :linear, the other supported algorithm, will read from the file in sequence. Note: the filename will be relative to the location of the .hrs file
+
+
+
+
+  
