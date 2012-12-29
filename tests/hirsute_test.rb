@@ -173,4 +173,21 @@ class TestHirsute < Test::Unit::TestCase
     coll1 << coll2
     assert(coll1.length == 7)
   end
+  
+  def testAnyObject
+    template = make_template('testAnyObject') {
+      has :id => counter(1)
+    }
+    coll1 = template * 3
+    coll2 = template * 4
+    greaterThan5 = any(template) do |item|
+      item.id > 5
+    end
+    assert(greaterThan5.id > 5)
+    
+    equals2 = any(template) do |item|
+      item.id == 2
+    end
+    assert(equals2.id == 2)
+  end
 end

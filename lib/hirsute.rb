@@ -54,8 +54,14 @@ def foreach(objTemplate)
   colls.each {|coll| coll.each {|item| yield item if block_given?}}
 end
 
-# returns a Collection of n elements that return true from the block. Note: this might return less.
-def find(n,collection,&block)
+# return any object in any collection that meets the criteria passed in a block
+def any(objTemplate)
+  results = Array.new
+  foreach(objTemplate) do |item|
+    results << item if !block_given?
+    results << item if block_given? && (yield item)
+  end
+  results.choice
 end
 
 def storage(storageSymbol)
