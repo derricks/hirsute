@@ -55,13 +55,19 @@ def foreach(objTemplate)
 end
 
 # return any object in any collection that meets the criteria passed in a block
-def any(objTemplate)
+def any(objTemplate,&block)
+  every(objTemplate,&block).choice
+end
+
+# return every object of a given type, combined from any collections that might include that type. If a block is passed, only elements returning true from the
+# block will be returned
+def every(objTemplate)
   results = Array.new
   foreach(objTemplate) do |item|
     results << item if !block_given?
     results << item if block_given? && (yield item)
   end
-  results.choice
+  results  
 end
 
 def storage(storageSymbol)

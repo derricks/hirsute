@@ -176,18 +176,16 @@ class TestHirsute < Test::Unit::TestCase
   
   def testAnyObject
     template = make_template('testAnyObject') {
-      has :id => counter(1)
+      has :objid => counter(1)
     }
     coll1 = template * 3
     coll2 = template * 4
-    greaterThan5 = any(template) do |item|
-      item.id > 5
-    end
-    assert(greaterThan5.id > 5)
+    greaterThan5 = any(template) {|item| item.objid > 5}
+    assert(greaterThan5.objid > 5)
     
     equals2 = any(template) do |item|
-      item.id == 2
+      item.objid == 2
     end
-    assert(equals2.id == 2)
+    assert(equals2.objid == 2)
   end
 end

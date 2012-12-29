@@ -9,9 +9,11 @@ ruby lib/hirsute.rb filename
 
 By convention, hirsute files end in .hrs, but you can pass any file you'd like to it.
 
+Commands are interpreted in a top-down fashion, which means you must define an object type before you use it.
+
 Templates
 ------------
-* a/an('_type_') - defines a template for a type of object in the system. You can pass a block of Ruby code which will get executed. Usually this will include _has_ and _is\_stored\_in_
+* a/an('_type_') - defines a template for a type of object in the system. You can pass a block of Ruby code which will get executed. Usually this will include _has_ and _is\_stored\_in_. Once you define a template, you can use _type_ as a regular name (e.g., once you've called _a('user')_, you can use _user_ as a language element). 
 
 <code><pre>
     a('user')
@@ -41,9 +43,9 @@ Templates
 
 Generators
 ----------
-These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will get used as the value for that field. Any time you define a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into, or add a separator between generated results.
+These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will always get used as the value for that field. Any time you use a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into, or add a separator between generated results.
 
-* one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. Note: Histogram must be the same length as options, and all the values must add up to 1.0
+* one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. If a histogram is not passed in, all options will be picked with equal probability. Note: Histogram must be the same length as options, and all the values must add up to 1.0
 
 * counter (startingValue) - keep an incrementing counter so that each new object created from the template gets the next value. Useful for ids and for making unique emails or screen names
 
@@ -56,7 +58,7 @@ These are the different data generators you can attach to any given field. Note 
 
 Collections
 -----------
-Collections hold one type of object, which you define when you create one. A collection supports certain Array methods, such as choice, length, and <<, and also mixes in Enumerable
+Collections can only hold one type of object, but multiple collections can hold the same type of object. A collection supports certain Array methods, such as choice, length, and <<, and also mixes in Enumerable
 
 * collection_of *objectType* - create an empty collection of the given object type. You might need to do this when creating mappings to other objects.
 
@@ -97,6 +99,27 @@ Collections hold one type of object, which you define when you create one. A col
 * finish(_collection_,_storage_) - output the specified collection based on the given storage type. If no storage type is given, it will use whatever was defined by the storage command
 
 * any _type_ - return a single random object of the given type (from any collection that contains that object type). Passing a block that returns a boolean will draw the random object only from ones that meet that criteria
+
+<code><pre>
+    a('user') {
+        has :id => counter(1)
+    }
+    user_set_1 = user * 20
+    user_set_2 = user * 30
+    sample_user_1 = any user # user could be from either collection
+    sample_user_2 = any user {|cur_user| cur_user.id < 20} # will only pick a random user from the first collection
+</pre></code>
+
+* every _type_ - return a collection of every element of that type (from any collection that contains objects of that type). Passing a block will result in a collection that only contains items where the block returns true
+
+<code><pre>
+    a('user') {
+        has :id => counter(1)
+    }
+    users_1 = user * 3
+    users_2 = user * 7
+    every(user) {|cur_user| cur_user.id > 2 && cur_user.id < 5} # returns a subset of users that span the two collections
+</pre></code>
 
 <code><pre>
     a('user') {
