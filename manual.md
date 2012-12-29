@@ -9,9 +9,8 @@ ruby lib/hirsute.rb filename
 
 By convention, hirsute files end in .hrs, but you can pass any file you'd like to it.
 
-The Language
+Templates
 ------------
-* storage _type_ - the storage system to output to. Currently, only :mysql is supported
 * a/an('_type_') - defines a template for a type of object in the system. You can pass a block of Ruby code which will get executed. Usually this will include _has_ and _is\_stored\_in_
 
 <code><pre>
@@ -40,7 +39,26 @@ The Language
     }
 </pre></code>
 
-* collection_of *objectType* - create an empty collection of the given object type. You might need to do this when creating mappings to other objects. Note: collections can only contain one type of object
+Generators
+----------
+These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will get used as the value for that field. Any time you define a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into, or add a separator between generated results.
+
+* one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. Note: Histogram must be the same length as options, and all the values must add up to 1.0
+
+* counter (startingValue) - keep an incrementing counter so that each new object created from the template gets the next value. Useful for ids and for making unique emails or screen names
+
+* combination (generators... ) - combines a variable amount of generators into one field. Results are concatenated together as strings
+
+* subset (generators... ) - combines some subset (determined randomly) of the first items in the list
+
+* read\_from\_file (filename,algorithm) - reads from a file to produce a value, wrapping around as needed. The default algorithm, :markov, skips ahead a random number of lines each time. :linear, the other supported algorithm, will read from the file in sequence. Note: the filename will be relative to the location of the .hrs file
+
+
+Collections
+-----------
+Collections hold one type of object, which you define when you create one. A collection supports certain Array methods, such as choice, length, and <<, and also mixes in Enumerable
+
+* collection_of *objectType* - create an empty collection of the given object type. You might need to do this when creating mappings to other objects.
 
 <code><pre>
     users = collection_of user
@@ -78,22 +96,21 @@ The Language
 
 * finish(_collection_,_storage_) - output the specified collection based on the given storage type. If no storage type is given, it will use whatever was defined by the storage command
 
-* find 
+* any _type_ - return a single random object of the given type (from any collection that contains that object type). Passing a block that returns a boolean will draw the random object only from ones that meet that criteria
 
-Generators
-----------
-These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will get used as the value for that field. Any time you define a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into, or add a separator between generated results.
+<code><pre>
+    a('user') {
+        has :id => counter(1),
+            :email => combination("apptest",counter(1),"@",one_of(['gmail','yahoo','mac','hotmail','aol']),".com")
+    }
+    find user {
+        email.end\_with? 'gmail.com'
+    } # returns a random user with a gmail.com address
+</pre></code>
 
-* one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. Note: Histogram must be the same length as options, and all the values must add up to 1.0
-
-* counter (startingValue) - keep an incrementing counter so that each new object created from the template gets the next value. Useful for ids and for making unique emails or screen names
-
-* combination (generators... ) - combines a variable amount of generators into one field. Results are concatenated together as strings
-
-* subset (generators... ) - combines some subset (determined randomly) of the first items in the list
-
-* read\_from\_file (filename,algorithm) - reads from a file to produce a value, wrapping around as needed. The default algorithm, :markov, skips ahead a random number of lines each time. :linear, the other supported algorithm, will read from the file in sequence. Note: the filename will be relative to the location of the .hrs file
-
+Miscellaneous
+-------------
+* storage _type_ - the default storage system to output to. Currently, only :mysql is supported
 
 
 
