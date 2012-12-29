@@ -7,6 +7,7 @@ require('lib/hirsute_template.rb')
 module Hirsute
   
    class Collection
+       include Enumerable
        # hold a class variable that contains all the collections for specific users
        @object_names_to_collections = Hash.new
        
