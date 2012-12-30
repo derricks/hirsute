@@ -83,7 +83,7 @@ Collections can only hold one type of object, but multiple collections can hold 
  </pre></code>
  
 * _collection_ << _object_ - appends the given object to the given collection. Note: collections can only contain one type of object 
-* foreach _objectType_ - find every collection containing that type of object, and iterate through each one in turn. Takes a block that gets each item in turn
+* foreach _objectType_ - find every collection that contains the type of object, and iterate through each one in turn. Takes a block that gets each item in turn
 
 <code><pre>
     a('user') {
@@ -110,7 +110,7 @@ Collections can only hold one type of object, but multiple collections can hold 
     sample_user_2 = any user {|cur_user| cur_user.id < 20} # will only pick a random user from the first collection
 </pre></code>
 
-* every _type_ - return a collection of every element of that type (from any collection that contains objects of that type). Passing a block will result in a collection that only contains items where the block returns true
+* every _type_ - return an array of every element of the specified type (from any collection that contains objects of that type). Passing a block will result in an array that only contains items where the block returns true.
 
 <code><pre>
     a('user') {
@@ -121,19 +121,11 @@ Collections can only hold one type of object, but multiple collections can hold 
     every(user) {|cur_user| cur_user.id > 2 && cur_user.id < 5} # returns a subset of users that span the two collections
 </pre></code>
 
-<code><pre>
-    a('user') {
-        has :id => counter(1),
-            :email => combination("apptest",counter(1),"@",one_of(['gmail','yahoo','mac','hotmail','aol']),".com")
-    }
-    find user {
-        email.end\_with? 'gmail.com'
-    } # returns a random user with a gmail.com address
-</pre></code>
-
 Miscellaneous
 -------------
 * storage _type_ - the default storage system to output to. Currently, only :mysql is supported
+
+* pick\_from(items,probabilities) - Utility method for returning a random item from an array based on an optional histogram. If the histogram is not passed in, a random item will be chosen based on a uniform distribution. Otherwise, the passed-in histogram will be used to determine the probability of any item being returned.
 
 
 
