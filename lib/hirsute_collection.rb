@@ -51,12 +51,7 @@ module Hirsute
               element.each {|item| self << item}
               return
            end
-           
-           if !@object_name
-             @object_name = element.class.name
-             Hirsute::Collection.registerCollectionForObject(self,@object_name)
-           end
-           
+                      
            raise "Only objects of type #{@object_name} can be stored in this collection" if element.class != class_for_name(@object_name)    
            
            @collection << element
