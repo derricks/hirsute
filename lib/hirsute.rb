@@ -75,7 +75,7 @@ def storage(storageSymbol)
 end
 
 # tells Hirsute to output the given collection to the given storage system (or to generate the files necessary for that)
-# if no storage symbol is passed in, this will use 
+# if no storage symbol is passed in, this will use the default set with the storage command
 def finish(collection,storageSymbol = nil)
   raise "No storage defined. Use 'storage <symbol>' to define a storage type" if @storage.nil? && storageSymbol.nil?
   
@@ -94,6 +94,15 @@ end
 # returns an empty collection of the specified template type
 def collection_of(template)
   collection template.templateName
+end
+
+# pick an item from an array based on an optional histogram
+def pick_from(options,histogram = nil)
+  if !histogram
+    options.choice
+  else
+    options[integer_from_histogram(histogram)]
+  end
 end
   
 
