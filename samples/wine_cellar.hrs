@@ -83,12 +83,12 @@ end
 bottleCellars = collection_of bottleCellar
 
 foreach cellar do |cur_cellar|
-  # a cellar might have 10, 20, or 40 different bottles, with some flux
-  count = random_item_with_histogram([10,20,40],[0.2,0.6,0.2])
+  # a cellar might have 10, 20, or 40 different (distinct) bottles, with some flux
+  bottles_in_cellar = pick_from([10,20,40],[0.2,0.6,0.2])
   count = count + rand(10)
   
   (1..count).each do |amount|
-    cur_bottle = bottles.choice
+    cur_bottle = any bottle
     
     cur_bottle_cellar = bottleCellar.make
     cur_bottle_cellar.bottle_id = cur_bottle.bottle_id
