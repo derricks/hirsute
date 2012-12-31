@@ -1,7 +1,7 @@
 Hirsute: The Manual
 ===================
 
-Hirsute is a Ruby DSL for defining rules that yield fake data sets. You can use these fake data sets for examples in an application, testing code against a "normal" (versus dev) database, or for generating data sets that can be used for load testing an application.
+Hirsute is a Ruby DSL for defining rules that yield fake data sets. You can use these fake data sets for examples in an application, testing code against a "normal" (versus cluttered and nonsensical dev) database, or for generating data sets that can be used for load testing an application.
 
 Usage
 -----
@@ -39,6 +39,18 @@ Templates
     a('user') {
         is\_stored\_in 'app\_users'
     }
+</pre></code>
+
+* make - once a template is defined, you can call make on it to create a fixed instance of the object type. If there is _exactly_ one collection holding objects of that type, the new object will automatically get added to it
+
+<code><pre>
+    a('user')
+    
+    users = user * 6
+    
+    new_user = user.make
+    
+    #users.length now equals 7
 </pre></code>
 
 Generators

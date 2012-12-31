@@ -1,4 +1,6 @@
 # A sample data definition for a fictional wine cellar management application
+# As a wine accumulator, I should say that this is an inadequate model for such an application, but it suffices to give
+# 
 # The basic model is:
 #    bottle - canonical form of a wine bottle description
 #    user - a user of the system
@@ -6,6 +8,7 @@
 #    tasting_note - one user's perceptions of a bottle (which may or may not be in the user's cellar)
 storage :mysql
 
+#define the users, who have unique screen names by virtue of the counter, but are otherwise random combinations of common wine forum terms
 a('user') {
   has :user_id => counter(1),
       :screen_name => combination(
@@ -15,8 +18,11 @@ a('user') {
   is_stored_in "users"
 }
 
+# create 1000 new users, each based off the template defined above
 users = user * 1000
 
+# a bottle represents a normalized definition of a bottle. It has an id, a producer (pulled randomly from files), a vintage that is probably 1980s or 1990s
+# -- the types of bottles one might put away for a while -- up to four grapes, and a country of origin
 a('bottle') {
   has :bottle_id => counter(1),
       :producer => subset(
@@ -33,19 +39,38 @@ a('bottle') {
   is_stored_in 'bottles'
 }
 
+# This represents a user's cellar. We give each one its own id, but then use a literal for the user_id, because we'll fill it in later
 a('cellar') {
   has :cellar_id => counter(1),
       :user_id => 1 # this will be set later
   is_stored_in "cellars"
 }
 
+# create an empty collection, because we'll fill it in as we go
+cellars = collection_of cellar
+
+# give each user a cellar
+foreach user do |cur_user|
+  user_cellar = cellar.make
+  user_cellar.user_id = cur_user.user_id
+  cellars << user_cellar
+end
+
+
+# This creates an object that would populate a join table (which also includes a field for the amount of bottles on hand)
+# The ids are kept as literals because they'll be filled in later by the code that makes each one
 a('bottleCellar') {
   has :cellar_id => 1, # this is set later
       :bottle_id => 1,  # set later
       :amount => one_of([1,5,12,24],[0.3,0.3,0.3,0.1]) {|count| count + rand(4)} # assume that people generally have around one or five instances of a bottle, less often a case
   is_stored_in 'bottle_cellar'
 }
+# now give each cellar some number of bottles
+bottleCellars = collection_of bottleCellar
 
+
+
+# This defines a tasting note that a single user might write about a single bottle. It pulls descriptors from various files.
 a('tastingNote') {
   has :tasting_note_id => counter(1)
       :description => combination(
@@ -68,20 +93,12 @@ a('tastingNote') {
       
 }
 
+tastingNotes = collection_of tastingNote
+
+# make 100 different bottles of wine
 bottles = bottle * 100
 
-# give each user a cellar
-cellars = collection_of cellar
-
-foreach user do |cur_user|
-  user_cellar = cellar.make
-  user_cellar.user_id = cur_user.user_id
-  cellars << user_cellar
-end
-
-# now give each cellar some number of bottles
-bottleCellars = collection_of bottleCellar
-
+# for every cellar, add a bunch of bottles with tasting notes
 foreach cellar do |cur_cellar|
   # a cellar might have 10, 20, or 40 different (distinct) bottles, with some flux
   bottles_in_cellar = pick_from([10,20,40],[0.2,0.6,0.2])
@@ -90,11 +107,15 @@ foreach cellar do |cur_cellar|
   (1..count).each do |amount|
     cur_bottle = any bottle
     
-    cur_bottle_cellar = bottleCellar.make
+    # attach this bottle to the cellar
+    cur_bottle_cellar = bottleCellar.make # note that this will fill in an amount of bottles within the cellar
     cur_bottle_cellar.bottle_id = cur_bottle.bottle_id
     cur_bottle_cellar.cellar_id = cur_cellar.cellar_id
     
-    bottleCellars << cur_bottle_cellar
+    # make a tasting note that a user might have entered for the bottle
+    tasting_note = tastingNote.make
+    tasting_note.bottle_id = cur_bottle.bottle_id
+    tasting_note.user_id = cellar.user_id
   end
 end
 
@@ -104,3 +125,4 @@ finish users
 finish bottles
 finish cellars
 finish bottleCellars
+finish

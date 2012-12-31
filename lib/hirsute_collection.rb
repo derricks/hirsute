@@ -43,7 +43,7 @@ module Hirsute
        def <<(element)
           # allows for deferred definition of type
            if element.kind_of? Hirsute::Template
-             self.<<(element.make)
+             self.<<(element.make(false))
              return
            end
            

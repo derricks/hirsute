@@ -71,7 +71,7 @@ module Hirsute
         end
       
         # makes an object based on this template definition. the 
-        def make
+        def make(addToSingleCollection=true)
             obj = class_for_name(@templateName).new
             if @fieldDefs
               @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate)}
@@ -80,13 +80,17 @@ module Hirsute
             if @transients
               @transients.each_pair{|transientName,generator| obj.set(transientName,generator.generate)}
             end
+            
+            # if there is exactly one collection declared for this type, add this object to it
+            colls = Hirsute::Collection.collections_holding_object(@templateName)
+            colls[0] << obj if addToSingleCollection && colls && colls.length == 1 
             obj
         end
       
         # makes n objects based on template and returns them as an array
         def *(count)
           ret_val = Collection.new(@templateName)
-          (1..count).each {|idx| ret_val << make}
+          (1..count).each {|idx| ret_val << make(false)}
           ret_val
         end
         

@@ -135,6 +135,13 @@ class TestHirsute < Test::Unit::TestCase
     end
   end
   
+  def testMakeAddsToSingleCollection
+    template = make_template('testMakeAddsToSingleCollection')
+    coll = collection_of template
+    template.make
+    assert(coll.length == 1)
+  end
+  
   # ensure that the << operator works properly when appending a template (i.e., it makes a new object rather than appending the template)
   def testAppendWithTemplate
     testObj3 = make_template('testObj3') {
