@@ -90,19 +90,19 @@ module Hirsute
        end
      
        # advances line_count lines from current location (resetting the file if necessary)
-       # and returns the relevant lie
+       # and returns the relevant line
        def read_line_at(line_count)
          line = ""
          (0...line_count).each do |idx|
            line = @file.gets
            
-           while line && line.strip != ""
+           while line && line.strip == ""
              line = @file.gets
            end
            
            if line.nil? # reached the end of the file
              reset_file
-             line = @file.gets
+             line = read_line_at(1)
            end
          end
          line.chomp
