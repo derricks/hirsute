@@ -53,7 +53,7 @@ module Hirsute
      end
        
      def _outputItem(item)
-         insert_string = "INSERT INTO #{item.storage_name} ("
+         insert_string = "INSERT INTO #{item.class.storage_name} ("
          sql_columns = item.class.fields.map{|col_name| "'" + col_name.to_s + "'"}
          insert_string = insert_string + sql_columns.join(",") + ") VALUES ("
          

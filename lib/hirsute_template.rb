@@ -67,7 +67,12 @@ module Hirsute
         # is_stored_in defines some meaningful name for where a generated object should be stored
         # in the final output (e.g., the name of a database table)
         def is_stored_in(storageName)
-          class_for_name(@templateName).class_eval {@storage_name = storageName;attr_reader :storage_name;}
+          class_for_name(@templateName).instance_eval {
+            @storage_name = storageName
+            class << self
+              attr_reader :storage_name
+            end
+          }
         end
       
         # makes an object based on this template definition. the 
