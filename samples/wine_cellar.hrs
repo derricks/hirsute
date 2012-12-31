@@ -53,7 +53,6 @@ cellars = collection_of cellar
 foreach user do |cur_user|
   user_cellar = cellar.make
   user_cellar.user_id = cur_user.user_id
-  cellars << user_cellar
 end
 
 
@@ -72,7 +71,7 @@ bottleCellars = collection_of bottleCellar
 
 # This defines a tasting note that a single user might write about a single bottle. It pulls descriptors from various files.
 a('tastingNote') {
-  has :tasting_note_id => counter(1)
+  has :tasting_note_id => counter(1),
       :description => combination(
          subset(
            read_from_file('wine_cellar_aromas.txt') {|text| text + ","},
@@ -82,14 +81,14 @@ a('tastingNote') {
            read_from_file('wine_cellar_aromas.txt') {|text| text + ","},
            read_from_file('wine_cellar_aromas.txt') {|text| text + ","}),
          subset(
-           read_from_file('wine_cellar_flavors.txt') {|text| text + ","}),
-           read_from_file('wine_cellar_flavors.txt') {|text| text + ","}),
+           read_from_file('wine_cellar_flavors.txt') {|text| text + ","},
+           read_from_file('wine_cellar_flavors.txt') {|text| text + ","},
            read_from_file('wine_cellar_flavors.txt') {|text| text + ","})
-         )
-      ),
+         ),
       :rating => one_of([1,2,3,4,5],[0.1,0.1,0.4,0.3,0.1]),
       :bottle_id => 1, # filled in later
       :user_id => 1    # filled in later
+    is_stored_in 'tasting_note'
       
 }
 
@@ -100,9 +99,8 @@ bottles = bottle * 100
 
 # for every cellar, add a bunch of bottles with tasting notes
 foreach cellar do |cur_cellar|
-  # a cellar might have 10, 20, or 40 different (distinct) bottles, with some flux
-  bottles_in_cellar = pick_from([10,20,40],[0.2,0.6,0.2])
-  count = count + rand(10)
+  # a cellar might have 10, 20 (most likely), or 40 different (distinct) bottles, with some flux
+  count = pick_from([10,20,40],[0.2,0.6,0.2]) + rand(10)
   
   (1..count).each do |amount|
     cur_bottle = any bottle
@@ -115,7 +113,7 @@ foreach cellar do |cur_cellar|
     # make a tasting note that a user might have entered for the bottle
     tasting_note = tastingNote.make
     tasting_note.bottle_id = cur_bottle.bottle_id
-    tasting_note.user_id = cellar.user_id
+    tasting_note.user_id = cur_cellar.user_id
   end
 end
 
@@ -125,4 +123,4 @@ finish users
 finish bottles
 finish cellars
 finish bottleCellars
-finish
+finish tastingNotes
