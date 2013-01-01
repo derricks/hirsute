@@ -12,25 +12,27 @@ module Hirsute
     # given an array of probabilities, return an integer (between 0 and length of probabilities) based on the probabilities passed in
     # in other words, [.9,.05,.05] would return 0 approximately 90% of the time.
     def integer_from_histogram(probabilities)
+      
       high_end = 1
       random_value = rand
     
+      final_idx = 0
       ret_val = probabilities.each_index do |idx|
         cur_prob = probabilities[idx]
       
         if random_value <= high_end && random_value > high_end - cur_prob
-            break idx
+           final_idx = idx
+           break
         else
             high_end = high_end - cur_prob
             next
         end
       end
-    
-      ret_val   
+      final_idx   
    end
    
    def random_item_with_histogram(list,probabilities)
-     list[integer_from_histogram(probabilities)]
+     probabilities.nil? || !probabilities.length ? list.choice : list[integer_from_histogram(probabilities)]
    end
   
    def is_template(obj)

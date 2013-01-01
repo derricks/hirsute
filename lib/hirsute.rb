@@ -98,11 +98,7 @@ end
 
 # pick an item from an array based on an optional histogram
 def pick_from(options,histogram = nil)
-  if !histogram
-    options.choice
-  else
-    options[integer_from_histogram(histogram)]
-  end
+  random_item_with_histogram(options,histogram)
 end
   
 
