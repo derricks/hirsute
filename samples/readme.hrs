@@ -1,0 +1,44 @@
+# the script used in the readme
+
+storage :mysql
+
+a('user') {
+    has :id => counter,
+        :email => combination(
+                  "testuser",counter,"@",one_of(['gmail','aol','yahoo']),".com")
+    is_stored_in "users"
+}
+
+#make 1000 users
+users = user * 1000
+
+# define a friendship object that maps two users together. Just define the user ids as literals so they can be defined but can be filled in later
+a('friendship') {
+    has :user1 => 1, 
+        :user2 => 1
+    is_stored_in "friendship"
+}
+friendships = collection_of friendship
+
+# for each user, pick an appropriate number of friends and create the friendship objects
+foreach user do |cur_user|
+  # figure out a number of friends this user might have. Pass in a histogram to steer the probability the way we want
+  # the first argument is the options to draw from, the second argument (optional) is a histogram representing distribution of probabilities
+  num_friends = pick_from([0,1,2,3,4,5,6,7,8,9,10],
+                           [0.02,0.1,0.3,0.3,0.2,0.01,0.01,0.01,0.01,0.02,0.01]
+                          )
+                          
+  # since this in Ruby, you can just write in it as needed
+  (0...num_friends).each do |idx|
+     # grab a random user that isn't this one
+     friend = any(user) {|friend| friend.id != cur_user.id}
+
+     new_friendship = friendship.make # because there's only one collection holding these, it's added automatically
+     new_friendship.user1 = friend.id
+     new_friendship.user2 = cur_user.id
+  end
+end
+
+# and now write them all out to files
+finish users
+finish friendships
