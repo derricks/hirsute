@@ -83,6 +83,8 @@ Roadmap
 -------
 Hirsute is still early in development, but my goal is to continue adding output formats (currently only mysql is supported) and generators as well as continuing to allow for more declarative syntax that would make the data generation more flexible, terse, and intuitive.
 
+I also don't think it will yet meet one of my needs, which is to generate the data for a multimillion-user system. So far, it does everything in memory, which will obviously cause problems for large data sets.
+
 Why Hirsute?
 ------------
 The name was a joke with a friend. When I wanted something like this, I asked him, since he's up on many open-source projects. He said he didn't know of something like this, so I replied, "No, no. You're supposed to say 'Look at Hirsute' or something like that."
