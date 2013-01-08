@@ -67,6 +67,8 @@ These are the different data generators you can attach to any given field. Note 
 
 * read\_from\_file (filename,algorithm) - reads from a file to produce a value, wrapping around as needed. The default algorithm, :markov, skips ahead a random number of lines each time. :linear, the other supported algorithm, will read from the file in sequence. Note: the filename will be relative to the location of the .hrs file
 
+* read\_from\_sequence (array) - reads each item in turn from an array in a continuous loop.
+
 
 Collections
 -----------

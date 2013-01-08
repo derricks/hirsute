@@ -195,4 +195,21 @@ class TestHirsute < Test::Unit::TestCase
     end
     assert(equals2.objid == 2)
   end
+  
+  def testReadFromSequence
+    template = make_template('testReadFromSequence') {
+       has :looper => read_from_sequence([1,2,3,4])
+    }
+    
+    # 5 objects should exercise the loop of 4 items
+    template1 = template.make
+    template2 = template.make
+    template3 = template.make
+    template4 = template.make
+    template5 = template.make
+    
+    assert(template4.looper == 4)
+    assert(template5.looper == template1.looper)
+      
+  end  
 end
