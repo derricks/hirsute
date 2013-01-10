@@ -69,7 +69,7 @@ These are the different data generators you can attach to any given field. Note 
 
 * read\_from\_sequence (array) - reads each item in turn from an array in a continuous loop.
 
-* depending\_on(field,possibilities) - use different generators or values depending on the value of some other field in the created object
+* depending\_on(field,possibilities) - use different generators or values depending on the value of some other field in the created object. possibilities is a hash of values to generators or values. Hirsute::DEFAULT can be used to specify a path if the value of the specified field doesn't match any defined option
 
 
 Collections
