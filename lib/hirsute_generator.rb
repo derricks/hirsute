@@ -109,4 +109,25 @@ module Hirsute
          line.chomp
       end
   end
+  
+  # generators of this type are dependant on some field in the final object already being set
+  # this base class allows 
+  class DependentGenerator < Generator
+    def initialize(dependencyFields,block)
+      @dependencyFields = dependencyFields
+      super(block)
+    end
+    
+    def dependency_fields
+      if @dependencyFields.kind_of? Array
+        @dependencyFields
+      else
+        containingArray = Array.new
+        containingArray << @dependencyFields
+        @dependencyFields = containingArray
+        dependency_fields
+      end
+    end
+      
+  end
 end

@@ -8,11 +8,11 @@ ABS_HRS_FILE = File::expand_path(ARGV[0]) if ARGV[0]
 
 Dir::chdir(File::dirname(__FILE__) + "/..")
 
-load('lib/hirsute_template.rb')
-load('lib/hirsute_collection.rb')
-load('lib/hirsute_fixed.rb')
-load('lib/hirsute_output.rb')
-load('lib/hirsute_utils.rb')
+require('lib/hirsute_template.rb')
+require('lib/hirsute_collection.rb')
+require('lib/hirsute_fixed.rb')
+require('lib/hirsute_output.rb')
+require('lib/hirsute_utils.rb')
 
 include Hirsute::Support
 

@@ -211,5 +211,48 @@ class TestHirsute < Test::Unit::TestCase
     assert(template4.looper == 4)
     assert(template5.looper == template1.looper)
       
+  end 
+  
+  def testDependentGeneratorCircularDependencyException
+    template = make_template("testDependentGeneratorCircularDependencyException") {
+      has :a => depending_on(:b, 3 => 3),
+          :b => depending_on(:a, 4 => 4)
+    }
+    begin
+      template.make
+      fail
+    rescue
+      assert(true)
+    end
+  end
+  
+  def testDependencyBasics
+    template = make_template("testDependencyBasics") {
+      has :value => read_from_sequence([1,2,3]),
+          :name => depending_on(:value,
+                                1 => 'a')
+    }
+    template1 = template.make
+    template2 = template.make
+    assert(template1.name == 'a')
+    assert(template2.name.nil?)
   end  
+    
+  def testDependencyBasicsWithDefault
+    template = make_template("testDependencyBasicsWithDefault") {
+      has :value => read_from_sequence([1,2,3]),
+          :name => depending_on(:value, 
+                                    1 => 'a',
+                                    Hirsute::DEFAULT => 'z')
+    }
+    
+    template1 = template.make
+    template2 = template.make
+    template3 = template.make
+    
+    assert(template1.value == 1 && template1.name == 'a')
+    assert(template2.value == 2 && template2.name == 'z')
+    assert(template3.value == 3 && template3.name == 'z')
+  end
+  
 end

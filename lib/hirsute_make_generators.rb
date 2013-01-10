@@ -1,9 +1,10 @@
 # the various commands that make Hirsute generators. This mostly just keeps these methods isolated
 
-load('lib/hirsute_generator.rb')
+require('lib/hirsute_generator.rb')
 require('lib/hirsute_utils.rb')
 
 module Hirsute
+  DEFAULT = :hirsute_default
   module GeneratorMakers
     include Hirsute::Support
     
@@ -73,6 +74,31 @@ module Hirsute
             end
           end
         }
+      end
+      
+      # fork to different generators depending on the value of a particular field within the object
+      # a value of DEFAULT can be used as a catch-all. If DEFAULT is not defined, a field value that isn't defined will cause
+      # nil to be returned
+      def depending_on(field,options,&block)
+        gen = DependentGenerator.new(field,block)
+        gen.instance_eval {
+          @options = options
+          @field = field
+          
+          # note that this generator won't be activated until the field we want is set
+          def _generate(onObj)
+            field_value = onObj.get(@field)
+            if @options[field_value]
+              @options[field_value]
+            elsif @options[DEFAULT]
+              @options[DEFAULT]
+            else
+              nil
+            end
+          end
+          
+        }
+        gen
       end
       
     private

@@ -30,10 +30,17 @@ a('bottle') {
                      read_from_file('wine_cellar_winery_seconds.txt') {|text| text + " "},
                      read_from_file('wine_cellar_winery_thirds.txt') {|text| text + " "}) {|result| result.strip},
       :vintage => one_of([1960,1970,1980,1990,2000],[0.05,0.05,0.2,0.4,0.3]) {|result| result + rand(9)}, # different vintages have different likelihoods, so use that accordingly
-      :grapes => subset(read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
-                        read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
-                        read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
-                        read_from_file('wine_cellar_grapes.txt') {|text| text + ","}) {|all_grapes| all_grapes[0...all_grapes.length]},
+      :grapes => depending_on(:country,
+                       'Italy' => 
+                         subset(read_from_file('wine_cellar_italian_grapes.txt') {|text| text + ","},
+                            read_from_file('wine_cellar_italian_grapes.txt') {|text| text + ","},
+                            read_from_file('wine_cellar_italian_grapes.txt') {|text| text + ","},
+                            read_from_file('wine_cellar_italian_grapes.txt') {|text| text + ","}),
+                        Hirsute::DEFAULT => 
+                         subset(read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
+                          read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
+                          read_from_file('wine_cellar_grapes.txt') {|text| text + ","},
+                          read_from_file('wine_cellar_grapes.txt') {|text| text + ","}) {|all_grapes| all_grapes[0...all_grapes.length]}),
       :country => one_of(['France','Germany','Italy','Austria','United States'])
                      
   is_stored_in 'bottles'

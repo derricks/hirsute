@@ -69,6 +69,8 @@ These are the different data generators you can attach to any given field. Note 
 
 * read\_from\_sequence (array) - reads each item in turn from an array in a continuous loop.
 
+* depending\_on(field,possibilities) - use different generators or values depending on the value of some other field in the created object
+
 
 Collections
 -----------

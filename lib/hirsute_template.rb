@@ -1,10 +1,10 @@
 # Defines the Template class that forms the foundation of Hirsute object definitions
 
-load('lib/hirsute_generator.rb')
-load('lib/hirsute_make_generators.rb')
-load('lib/hirsute_fixed.rb')
-load('lib/hirsute_collection.rb')
-load('lib/hirsute_utils.rb')
+require('lib/hirsute_generator.rb')
+require('lib/hirsute_make_generators.rb')
+require('lib/hirsute_fixed.rb')
+require('lib/hirsute_collection.rb')
+require('lib/hirsute_utils.rb')
 
 module Hirsute
   class Template
@@ -77,13 +77,47 @@ module Hirsute
       
         # makes an object based on this template definition. the 
         def make(addToSingleCollection=true)
+            fieldsAlreadySet = Hash.new(false)
+            dependentGenerators = Hash.new
+            
+            allFields = Array.new
             obj = class_for_name(@templateName).new
-            if @fieldDefs
-              @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate(obj))}
+            
+            # populate all the fields; traverse both collections of fields at once
+            [@fieldDefs,@transients].each do |field_map|
+              next if field_map.nil?
+            
+              field_map.each_pair do |fieldName,generator| 
+                # if it's a dependent generator, check to see if the fields it's dependent on have been set
+                if generator.kind_of? Hirsute::DependentGenerator
+                  if !dependent_fields_are_set?(fieldsAlreadySet,generator)
+                    dependentGenerators[fieldName] = generator
+                    next
+                  end
+                end
+                obj.set(fieldName,generator.generate(obj))
+                fieldsAlreadySet[fieldName] = true;
+              end
             end
             
-            if @transients
-              @transients.each_pair{|transientName,generator| obj.set(transientName,generator.generate(obj))}
+            # now handle any dependent generators left hanging and try to spot endless loops
+            cur_dependent_gens_length = dependentGenerators.size
+            while(cur_dependent_gens_length > 0)
+              dependentGenerators.keys.each do |field|
+                generator = dependentGenerators[field]
+                next if generator.nil?
+                if dependent_fields_are_set?(fieldsAlreadySet,generator)
+                  
+                   # all dependencies are in place
+                   obj.set(field,generator.generate(obj))
+                   fieldsAlreadySet[field] = true
+                   dependentGenerators.delete(field)
+                end
+              end
+              
+              # if the size of the hash hasn't changed, we have a problem: another pass through the loop won't change things, so it'll go forever
+              raise "Dependency loop spotted in #{@templateName}. Check generators to make sure there are no circular dependencies." if dependentGenerators.size == cur_dependent_gens_length
+              cur_dependent_gens_length = dependentGenerators.size
             end
             
             # if there is exactly one collection declared for this type, add this object to it
@@ -109,6 +143,9 @@ module Hirsute
           }
         end
         
-            
+        def dependent_fields_are_set?(fields_set,dependent_generator)
+          unset_fields = dependent_generator.dependency_fields.select {|fieldName| !fields_set[fieldName]}
+          unset_fields.length == 0
+        end
   end
 end
