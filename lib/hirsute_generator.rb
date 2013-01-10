@@ -19,17 +19,18 @@ module Hirsute
        end
      end
      
-     def generate
-       result = _generate
+     # do the actual work of generating a value. takes the fixed object being made as an argument
+     def generate(onObj)
+       result = _generate(onObj)
 
        # if a generator returns a generator, keep going down the chain
        while result.kind_of? Generator
-         result = result.generate
+         result = result.generate(onObj)
        end
        finish(result)
      end
      
-     def _generate
+     def _generate(onObj)
      end
   end
   
@@ -42,9 +43,9 @@ module Hirsute
       end
       
       # return the joined response of each embedded generator
-      def _generate
+      def _generate(onObj)
          ret_val = ""
-         @generators.each {|gen| ret_val = ret_val + gen.generate.to_s}
+         @generators.each {|gen| ret_val = ret_val + gen.generate(onObj).to_s}
          ret_val
       end
   end
@@ -56,7 +57,7 @@ module Hirsute
         super(block)
       end
       
-      def _generate
+      def _generate(onObj)
         @value
       end
    end
@@ -71,7 +72,7 @@ module Hirsute
          super(block)
        end
        
-       def _generate
+       def _generate(onObj)
          if @algorithm == :markov
            advance_count = rand(100)
            read_line_at(advance_count)

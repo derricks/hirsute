@@ -79,11 +79,11 @@ module Hirsute
         def make(addToSingleCollection=true)
             obj = class_for_name(@templateName).new
             if @fieldDefs
-              @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate)}
+              @fieldDefs.each_pair {|fieldName,generator| obj.set(fieldName,generator.generate(obj))}
             end
             
             if @transients
-              @transients.each_pair{|transientName,generator| obj.set(transientName,generator.generate)}
+              @transients.each_pair{|transientName,generator| obj.set(transientName,generator.generate(obj))}
             end
             
             # if there is exactly one collection declared for this type, add this object to it

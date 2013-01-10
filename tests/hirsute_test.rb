@@ -33,7 +33,7 @@ class TestHirsute < Test::Unit::TestCase
     histogram = [0.9,0.05,0.05]
     gen = one_of(list,histogram)
     (1..1000).each do |i|
-      results << gen.generate
+      results << gen.generate(nil)
     end
     
     a_count = (results.select {|item| item == 'a'}).length
@@ -43,21 +43,21 @@ class TestHirsute < Test::Unit::TestCase
   def testOneOfGenerator
     
     domains = ["gmail.com","yahoo.com","ea.com"]
-    domain = one_of(domains).generate
+    domain = one_of(domains).generate(nil)
     assert(domain == 'gmail.com' || domain == 'yahoo.com' || domain = 'ea.com')
   end
   
   def testFileRead
     gen = read_from_file('tests/first_names.txt',:linear)
-    line = gen.generate
+    line = gen.generate(nil)
     assert(line == 'Derrick')
     
     # toss the rest
     (1..7).each do |i|
-      line = gen.generate
+      line = gen.generate(nil)
     end
     
-    line = gen.generate() # should have wrapped around
+    line = gen.generate(nil) # should have wrapped around
     assert(line == 'Derrick')
   end
   
@@ -88,14 +88,14 @@ class TestHirsute < Test::Unit::TestCase
     coll << "b"
     coll << "c"
     
-    str = one_of(coll).generate
+    str = one_of(coll).generate(nil)
     assert(str=='a' || str == 'b' || str == 'c')
   end
   
   def testPostGenerateBlockExecution
     list = ['abc','apple','asparagus']
     gen = one_of(list) {|value| value[0,1]}
-    result = gen.generate
+    result = gen.generate(nil)
     assert(result == 'a')
   end
   

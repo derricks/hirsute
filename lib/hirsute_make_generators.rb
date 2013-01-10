@@ -10,7 +10,7 @@ module Hirsute
     public
       # A generator that increments values from a starting point. Good for IDs
       def counter(startingPoint=1,&block)
-          gen_make_generator(block) {@current = startingPoint;def _generate; cur_current = @current; @current = @current + 1; cur_current; end;}
+          gen_make_generator(block) {@current = startingPoint;def _generate(onObj); cur_current = @current; @current = @current + 1; cur_current; end;}
       end
           
       # A generator that combines all the generators passed in.
@@ -23,7 +23,7 @@ module Hirsute
         gen_make_generator(block) {
           @generators = args.map {|item| generator_from_value(item)}
           @block = block
-          def _generate
+          def _generate(onObj)
             count = rand(@generators.length)
             subset = @generators[0..count]
 
@@ -35,12 +35,12 @@ module Hirsute
       # pick one of the itmes in the list randomly
       def one_of (list,histogram = nil,&block)
         if !histogram
-          gen_make_generator(block) {@options = list; def _generate; @options.choice; end;}
+          gen_make_generator(block) {@options = list; def _generate(onObj); @options.choice; end;}
         else
           gen_make_generator(block) {
             @options = list
             @histogram = histogram
-            def _generate
+            def _generate(onObj)
               random_item_with_histogram(@options,@histogram)
             end
           }
@@ -62,19 +62,19 @@ module Hirsute
           @items = array
           @index = 0
           
-          def _generate
+          def _generate(onObj)
             item = @items[@index]
             if item
               @index = @index + 1
               item
             else
               @index = 0
-              generate
+              generate(onObj)
             end
           end
         }
       end
-    
+      
     private
       # generic method for making a generator based off of a block. useful for simple cases.
       def gen_make_generator(finishProc=nil,&block)
