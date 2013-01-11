@@ -5,7 +5,7 @@ Hirsute is a Ruby-based domain specific language for generating plausible fake d
 * building a "real" database for testing (versus the often messy, inaccurate databases in dev systems)
 * building a database for load testing before a launch
 
-In Hirsute, you define a template for what an object might look like, and then generate however many copies you need. Then you can work with those collections as needed. There is a full manual, but here is a quick example to give the flavor. Say you're building a system where you have a bunch of users, and you want to build in a "friend" concept that allows each user to have 10 friends. You want to generate a random sample of data, but you think most users will only 2-4 friends.
+In Hirsute, you define a template for what an object might look like, and then generate however many copies you need. Then you can work with those collections as needed. There is a full manual, but here is a quick example to give the flavor. Say you're building a system where you have a bunch of users, and you want to build in a "friend" concept that allows each user to have 10 friends. You want to generate a random sample of data, but you think most users will only have 2-4 friends.
 
 The relevant Hirsute script might look like this:
 
