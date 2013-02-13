@@ -29,7 +29,7 @@ a('bottle') {
                      read_from_file('wine_cellar_winery_firsts.txt') {|text| text + " "},
                      read_from_file('wine_cellar_winery_seconds.txt') {|text| text + " "},
                      read_from_file('wine_cellar_winery_thirds.txt') {|text| text + " "}) {|result| result.strip},
-      :vintage => one_of([1960,1970,1980,1990,2000],[0.05,0.05,0.2,0.4,0.3]) {|result| result + rand(9)}, # different vintages have different likelihoods, so use that accordingly
+      :vintage => one_of([1960...1970,1970...1980,1980...1990,1990...2000,2000...2010],[0.05,0.05,0.2,0.4,0.3]), # different vintages have different likelihoods, so use that accordingly
       :grapes => depending_on(:country,
                        'Italy' => 
                          subset(read_from_file('wine_cellar_italian_grapes.txt') {|text| text + ","},

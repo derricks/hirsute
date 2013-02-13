@@ -255,4 +255,27 @@ class TestHirsute < Test::Unit::TestCase
     assert(template3.value == 3 && template3.name == 'z')
   end
   
+  def testRangeArrayCaching
+    range1 = 1..3
+    range2 = 1..3 # ensure that the same conceptual range maps to the same array
+    
+    range3 = 1..4
+    
+    ary = Hirsute::Support.get_range_array(range1)
+    ary2 = Hirsute::Support.get_range_array(range2)
+    ary3 = Hirsute::Support.get_range_array(range2)
+    ary4 = Hirsute::Support.get_range_array(range3)
+    assert(ary.equal?(ary2))
+    assert(ary.equal?(ary3))
+    assert(!ary.equal?(ary4))
+  end
+  
+  def testRangeResultsBecomeElements
+    template = make_template("testRangeResultsBecomeElements") {
+      has :rating => one_of([1..10])
+    }
+    obj = template.make
+    assert(obj.rating >= 1 && obj.rating <= 10)
+  end
+  
 end

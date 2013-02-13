@@ -27,6 +27,13 @@ module Hirsute
        while result.kind_of? Generator
          result = result.generate(onObj)
        end
+       
+       # if it's a range, grab the array from the range and choose one item randomly
+       if result.kind_of? Range
+         ary = Hirsute::Support.get_range_array(result)
+         result = ary.choice
+       end
+       
        finish(result)
      end
      

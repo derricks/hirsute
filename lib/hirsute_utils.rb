@@ -2,6 +2,11 @@
 
 module Hirsute
   module Support
+    
+    # store a map of range objects to its constituent array. But we want to store it within the Module's eigenclass so it's shared
+    # across the code base
+    Hirsute::Support.instance_eval {@rangeToArray = Hash.new}
+    
     # return the class object for the given string. Recipes for object types (e.g., a('thing'))
     # create a class definition for that object (Thing) for a variety of reasons. This provides an easy mechanism
     # for returning the class constant given a String, which is often what we have available when working
@@ -66,7 +71,24 @@ module Hirsute
       else
          LiteralGenerator.new(value,block)
       end
-   end    
+   end
+   
+   # Given a range object, select an item randomly from it. This method hashes range -> range.to_a for speed
+   def random_from_range(range)    
+     ary = get_range_array(range)
+   end
+   
+   # Gets the array associated with a range from the cache, or adds an entry if it's not there
+   # refactored for unit testing
+   # todo: make private and call
+   def Support.get_range_array(range)
+     ary = @rangeToArray[range]
+     if !ary
+        ary = range.to_a
+        @rangeToArray[range] = ary
+     end
+     ary        
+   end
   end
   
   
