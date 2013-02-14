@@ -57,6 +57,8 @@ Generators
 ----------
 These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will always get used as the value for that field. Any time you use a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into, or add a separator between generated results.
 
+If a generator returns another generator, that will be called, and so on. If a generator returns a Range object, a random value from that range will be the ultimate generated value.
+
 * one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. If a histogram is not passed in, all options will be picked with equal probability. Note: Histogram must be the same length as options, and all the values must add up to 1.0
 
 * counter (startingValue) - keep an incrementing counter so that each new object created from the template gets the next value. Useful for ids and for making unique emails or screen names
