@@ -1,9 +1,20 @@
 # Defines output modules that can translate Hirsute objects into load formats for various systems
+require 'lib/hirsute_utils.rb'
 
 module Hirsute
   
+  include Support
+  
   # base class for working with objects
   class Outputter
+    
+    attr_accessor :fields
+    
+    def initialize(collection)
+      @collection = collection
+      obj_class = Hirsute::Support.class_for_name(@collection.object_name)
+      @fields = obj_class.fields
+    end
     
     # allows the outputter to do any preliminary work
     def start
@@ -19,15 +30,19 @@ module Hirsute
     
     def _finish;end;
     
+    def get_file(object_name) 
+      object_name + ".load"
+    end
+    
     # external method telling 
-    def output(collection)
+    def output
       #derive file name from class of object
       
-      begin
-        @file = File.open(collection.object_name + '.load','w')
+      begin        
+        @file = File.open(get_file(@collection.object_name),'w')
         start
       
-        collection.each {|item| _outputItem(item)}
+        @collection.each {|item| _outputItem(item)}
       
         finish
       rescue Exception => e

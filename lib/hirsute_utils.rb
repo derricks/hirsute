@@ -80,7 +80,7 @@ module Hirsute
    
    # Gets the array associated with a range from the cache, or adds an entry if it's not there
    # refactored for unit testing
-   # todo: make private and call
+   # Intended to be within the module's eigenclass
    def Support.get_range_array(range)
      ary = @rangeToArray[range]
      if !ary

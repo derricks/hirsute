@@ -8,15 +8,15 @@ ABS_HRS_FILE = File::expand_path(ARGV[0]) if ARGV[0]
 
 Dir::chdir(File::dirname(__FILE__) + "/..")
 
+require('lib/hirsute_utils.rb')
 require('lib/hirsute_template.rb')
 require('lib/hirsute_collection.rb')
 require('lib/hirsute_fixed.rb')
 require('lib/hirsute_output.rb')
-require('lib/hirsute_utils.rb')
 
 include Hirsute::Support
 
-@outputters = {:mysql => Hirsute::MySQLOutputter.new}
+@outputters = {:mysql => Hirsute::MySQLOutputter}
 
 @objToTemplates = Hash.new
 
@@ -80,9 +80,9 @@ def finish(collection,storageSymbol = nil)
   raise "No storage defined. Use 'storage <symbol>' to define a storage type" if @storage.nil? && storageSymbol.nil?
   
   if storageSymbol.nil?
-    @outputters[@storage].output(collection)
+    @outputters[@storage].new(collection).output
   else
-    @outputters[storageSymbol].output(collection)
+    @outputters[storageSymbol].new(collection).output
   end
 end
 

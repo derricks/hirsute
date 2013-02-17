@@ -1,10 +1,10 @@
 # unit tests for the hirsute language
 
 require 'test/unit'
+require 'lib/hirsute_utils.rb'
 require 'lib/hirsute.rb'
 require 'lib/hirsute_make_generators.rb'
 require 'lib/hirsute_collection.rb'
-require 'lib/hirsute_utils.rb'
 
 class TestHirsute < Test::Unit::TestCase
   include Hirsute::GeneratorMakers
@@ -277,5 +277,41 @@ class TestHirsute < Test::Unit::TestCase
     obj = template.make
     assert(obj.rating >= 1 && obj.rating <= 10)
   end
+  
+  # just to measure that range caching is worth it
+  def testRangeCachingSpeed
+    iterations = 100000
+    range = 1..10
+    
+    start = Time.new
+    (1..iterations).each {|i| range.to_a}
+    
+    avg_to_a_time = (Time.new - start).to_f / iterations
+    
+    start = Time.new
+    (1..iterations).each {|i| Hirsute::Support.get_range_array(range)}
+    avg_cached_time = (Time.new - start).to_f / iterations
+    
+    assert(avg_cached_time < avg_to_a_time)
+    
+  end
+  
+  # for testing outputter behavior.
+  class TestOutputter < Hirsute::Outputter
+    def _outputItem(item)
+    end
+  end
+  
+  def testFieldsInOutputter
+    # build up the collection
+    template = make_template("testFieldsInOutputter") {
+       has :id => counter(1)
+    }
+    collection = template * 4
+    
+    outputter = TestOutputter.new(collection)
+    assert(outputter.fields[0] == :id)
+  end
+  
   
 end
