@@ -79,4 +79,21 @@ module Hirsute
      end
   end
   
+  class CSVOutputter < Outputter
+    def get_file(name)
+      name + ".csv"
+    end
+    
+    def _start
+      #output header
+      header = fields.map{|field| "\"#{field}\""}.join(",")
+      @file.puts header
+    end
+    
+    def _outputItem(item)
+      line = fields.map {|field| "\"#{item.send(field)}\""}.join(",")
+      @file.puts line
+    end
+  end
+  
 end

@@ -16,7 +16,8 @@ require('lib/hirsute_output.rb')
 
 include Hirsute::Support
 
-@outputters = {:mysql => Hirsute::MySQLOutputter}
+@outputters = {:mysql => Hirsute::MySQLOutputter,
+               :csv   => Hirsute::CSVOutputter}
 
 @objToTemplates = Hash.new
 
