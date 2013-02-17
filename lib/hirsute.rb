@@ -25,6 +25,10 @@ def storage(storage_system)
    @storage = storage_system
 end
 
+def storage_options(options = Hash.new)
+  @storage_options = options
+end
+
 # you can use an or a as your definition
 def an(objName,&block)
   a(objName) {block.call}
@@ -71,19 +75,15 @@ def every(objTemplate)
   results  
 end
 
-def storage(storageSymbol)
-  @storage = storageSymbol
-end
-
 # tells Hirsute to output the given collection to the given storage system (or to generate the files necessary for that)
 # if no storage symbol is passed in, this will use the default set with the storage command
 def finish(collection,storageSymbol = nil)
   raise "No storage defined. Use 'storage <symbol>' to define a storage type" if @storage.nil? && storageSymbol.nil?
   
   if storageSymbol.nil?
-    @outputters[@storage].new(collection).output
+    @outputters[@storage].new(collection,@storage_options).output
   else
-    @outputters[storageSymbol].new(collection).output
+    @outputters[storageSymbol].new(collection,@storage_options).output
   end
 end
 

@@ -10,10 +10,22 @@ module Hirsute
     
     attr_accessor :fields
     
-    def initialize(collection)
+    def initialize(collection,options=Hash.new)
       @collection = collection
-      obj_class = Hirsute::Support.class_for_name(@collection.object_name)
-      @fields = obj_class.fields
+      @obj_class = Hirsute::Support.class_for_name(@collection.object_name)
+      @fields = @obj_class.fields
+      @options = options
+    end
+    
+    def get_storage_option(option,default=nil)
+      return default if !@options
+      
+      retVal = @options[option]
+      if retVal != nil
+        retVal
+      else
+        default
+      end
     end
     
     # allows the outputter to do any preliminary work
@@ -56,27 +68,54 @@ module Hirsute
   
   
   class MySQLOutputter < Outputter
-     # convenience method for getting a SQL representation of a ruby object
-     def object_value_to_sql_literal(value)
-       if value.nil?
-          "NULL"
-       elsif value.kind_of? Numeric
-         value.to_s
-       else
-         "'#{value}'"
-       end
-     end
-       
+    
+    MySQLOutputter::DEFAULT_MAX_PACKET = 1048576
+    
+    def _start
+      @cur_statement = insertStringBase
+    end
+    
      def _outputItem(item)
-         insert_string = "INSERT INTO #{item.class.storage_name} ("
-         sql_columns = item.class.fields.map{|col_name| "'" + col_name.to_s + "'"}
-         insert_string = insert_string + sql_columns.join(",") + ") VALUES ("
+         # add VALUES(...) to existing string only if the existing string plus the values line is smaller than mox_allowed_packet
          
-         sql_values = item.class.fields.map{|fieldName| object_value_to_sql_literal(item.get(fieldName))}
-         insert_string = insert_string + sql_values.join(",") + ");\n"
+         value_string = " VALUES (" + @fields.map{|column| object_value_to_sql_literal(item.get(column))}.join(",") + "),"
          
-         @file.puts(insert_string)
+         if @cur_statement.length + value_string.length > get_storage_option(:max_allowed_packet,MySQLOutputter::DEFAULT_MAX_PACKET)
+           # the current statement plus the addition would be too large. so output current statement, reset, start again
+           output_current
+           @cur_statement = insertStringBase
+         end
+           
+         @cur_statement << value_string
      end
+     
+     def _finish
+       output_current # flush the last entry
+     end
+
+     private
+     
+       def output_current
+         @file.puts(@cur_statement[0...-1] << ";\n") # trim the tailing comma that comes from the last value_string
+       end
+       
+       def insertStringBase
+         "INSERT INTO #{@obj_class.storage_name} (" +
+             @fields.map{|column| column.to_s}.join(",") +
+             ") "
+       end
+       
+       # convenience method for getting a SQL representation of a ruby object
+       def object_value_to_sql_literal(value)
+         if value.nil?
+            "NULL"
+         elsif value.kind_of? Numeric
+           value.to_s
+         else
+           "'#{value}'"
+         end
+       end
+       
   end
   
   class CSVOutputter < Outputter
@@ -86,14 +125,19 @@ module Hirsute
     
     def _start
       #output header
-      header = fields.map{|field| "\"#{field}\""}.join(",")
+      header = fields.map{|field| "\"#{field}\""}.join(separator)
       @file.puts header
     end
     
     def _outputItem(item)
-      line = fields.map {|field| "\"#{item.send(field)}\""}.join(",")
+      line = fields.map {|field| "\"#{item.send(field)}\""}.join(separator)
       @file.puts line
     end
   end
+  
+  private
+    def separator
+      get_storage_option(:separator,",")
+    end
   
 end

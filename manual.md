@@ -141,7 +141,14 @@ Collections can only hold one type of object, but multiple collections can hold 
 
 Miscellaneous
 -------------
-* storage _type_ - the default storage system to output to. Currently, only :mysql is supported
+* storage _type_ - the default storage system to output to. Currently, :mysql and :csv are supported
+
+* storage\_options _hash_ - various options to modify the behavior of the storage output
+    * :mysql options:
+        * :max\_allowed\_packet - the maximum size of the insert created, which is configured for bulk inserts. Defaults to 1048576
+    * :csv options:
+        * :separator - the character to use between fields. Defaults to ","
+        
 
 * pick\_from(items,probabilities) - Utility method for returning a random item from an array based on an optional histogram. If the histogram is not passed in, a random item will be chosen based on a uniform distribution. Otherwise, the passed-in histogram will be used to determine the probability of any item being returned.
 
