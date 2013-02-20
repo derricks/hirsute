@@ -81,7 +81,7 @@ To run this script, cd to the hirsute directory and run
 
 Roadmap
 -------
-Hirsute is still early in development, but my goal is to continue adding output formats (currently only mysql is supported) and generators as well as continuing to allow for more declarative syntax that would make the data generation more flexible, terse, and intuitive.
+Hirsute is still early in development, but my goal is to continue adding output formats (currently only mysql and csv are supported) and generators as well as continuing to allow for more declarative syntax that would make the data generation more flexible, terse, and intuitive.
 
 I also don't think it will yet meet one of my needs, which is to generate the data for a multimillion-user system. So far, it does everything in memory, which will obviously cause problems for large data sets.
 
