@@ -11,14 +11,6 @@ module Hirsute
        @finalizer = block
      end
      
-     def finish(value)
-       if @finalizer
-         @finalizer.call(value)
-       else
-         value
-       end
-     end
-     
      # do the actual work of generating a value. takes the fixed object being made as an argument
      def generate(onObj)
        result = _generate(onObj)
@@ -34,11 +26,24 @@ module Hirsute
          result = ary.choice
        end
        
-       finish(result)
+       finish(result,onObj)
      end
      
      def _generate(onObj)
      end
+     
+     private
+       def finish(value,onObj)
+         # create a local copy for closure
+         finalizer = @finalizer
+         if finalizer
+           onObj.instance_eval {
+             finalizer.call(value)
+           }
+         else
+           value
+         end
+       end
   end
   
   #in this case, the definition is fixed, so no need for dynamic construction
