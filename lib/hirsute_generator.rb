@@ -35,11 +35,8 @@ module Hirsute
      private
        def finish(value,onObj)
          # create a local copy for closure
-         finalizer = @finalizer
-         if finalizer
-           onObj.instance_eval {
-             finalizer.call(value)
-           }
+         if @finalizer
+           onObj.instance_exec value, &@finalizer
          else
            value
          end
