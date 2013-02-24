@@ -77,6 +77,18 @@ bottleCellars = collection_of bottleCellar
 
 
 # This defines a tasting note that a single user might write about a single bottle. It pulls descriptors from various files.
+star_ratings = <<-HIST
+  1 | **
+    |
+  2 | **
+    |
+  3 | *********
+    |
+  4 | *********
+    |
+  5 | *****
+HIST
+
 a('tastingNote') {
   has :tasting_note_id => counter(1),
       :description => combination(
@@ -92,7 +104,7 @@ a('tastingNote') {
            read_from_file('wine_cellar_flavors.txt') {|text| text + ","},
            read_from_file('wine_cellar_flavors.txt') {|text| text + ","})
          ),
-      :rating => one_of([1,2,3,4,5],[0.1,0.1,0.4,0.3,0.1]),
+      :rating => one_of([1,2,3,4,5],star_ratings),
       :bottle_id => 1, # filled in later
       :user_id => 1    # filled in later
     is_stored_in 'tasting_note'
