@@ -2,11 +2,13 @@
 
 require('lib/hirsute_generator.rb')
 require('lib/hirsute_utils.rb')
+require('lib/histoparse.rb')
 
 module Hirsute
   DEFAULT = :hirsute_default
   module GeneratorMakers
     include Hirsute::Support
+    include Hirsute::HistoParse
     
     public
       # A generator that increments values from a starting point. Good for IDs
@@ -38,9 +40,12 @@ module Hirsute
         if !histogram
           gen_make_generator(block) {@options = list; def _generate(onObj); @options.choice; end;}
         else
+          histogram_buckets = histogram
+          histogram_buckets = parse_histogram(histogram).histogram_buckets if histogram.kind_of? String
+          
           gen_make_generator(block) {
             @options = list
-            @histogram = histogram
+            @histogram = histogram_buckets
             def _generate(onObj)
               random_item_with_histogram(@options,@histogram)
             end

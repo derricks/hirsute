@@ -59,7 +59,7 @@ These are the different data generators you can attach to any given field. Note 
 
 If a generator returns another generator, that will be called, and so on. If a generator returns a Range object, a random value from that range will be the ultimate generated value.
 
-* one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. If a histogram is not passed in, all options will be picked with equal probability. Note: Histogram must be the same length as options, and all the values must add up to 1.0
+* one_of (options,histogram) - choose a random item from a list of options. If a histogram is passed in, that is used to determine the probability of picking one option over another. If a histogram is not passed in, all options will be picked with equal probability. Note: Histogram must be no longer than the list. It can be shorter, but than items at the end of the list won't be selected. See below about histograms
 
 * counter (startingValue) - keep an incrementing counter so that each new object created from the template gets the next value. Useful for ids and for making unique emails or screen names
 
@@ -72,6 +72,31 @@ If a generator returns another generator, that will be called, and so on. If a g
 * read\_from\_sequence (array) - reads each item in turn from an array in a continuous loop.
 
 * depending\_on(field,possibilities) - use different generators or values depending on the value of some other field in the created object. possibilities is a hash of values to generators or values. Hirsute::DEFAULT can be used to specify a path if the value of the specified field doesn't match any defined option
+
+Histograms
+----------
+One of the main features in Hirsute is the ability to choose randomly based on a non-uniform distribution. A variety of methods in the system allow you to pass in a histogram of probabilities that will be used instead of a uniform spread.
+
+You can specify a histogram in two ways: by passing a list of probabilities to the method or by passing a string which can be parsed as a histogram laid out horizontally. For instance, the following two calls are valid:
+
+<code><pre>
+    one\_of([1,2,3],[0.5,0.2,0.3])
+</pre></code>
+
+<code><pre>
+    sample\_histogram = <<-HIST
+       \*\*\*\*\*
+       \*\*\*
+       \*\*\*\*\*\*\*
+       \*\*\*
+    HIST
+    
+    one_of ([1,2,3,4],HIST)
+</pre></code>
+
+The histogram parsing code only looks for lines of \* characters. You could thus add comments, axes, or any other information without affecting the parsing.
+
+If your histogram has more entries than there are items in the list, Hirsute will raise an exception. If your histogram has fewer entries than your list, it will print out a warning that items at the end of the list will not get selected. Histogram values do not need to add up to one; Hirsute will scale values appropriately.
 
 
 Collections

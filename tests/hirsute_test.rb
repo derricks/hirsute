@@ -27,6 +27,30 @@ class TestHirsute < Test::Unit::TestCase
     
   end
   
+  def testHistogramGreaterThanList
+    begin
+      random_item_with_histogram([1,2],[1,2,3,4])
+      fail
+    rescue Exception => e
+      assert(true)
+    end
+  end
+  
+  def testHistogramDoesntEqualOne
+    histogram = [0.2,0.1]
+    values = Array.new
+    
+    (1..1000).each do |i|
+      values << random_item_with_histogram([1,2],histogram)
+    end
+    
+    one_values = values.select {|item| item == 1}
+    two_values = values.select {|item| item == 2}
+    
+    assert(one_values.length > 667 * 0.95 && one_values.length < 667 * 1.05)
+    assert(two_values.length > 333 * 0.95 && two_values.length < 333 * 1.05)
+  end
+  
   def testOneOfWithHistogram
     results = []
     list = ["a","b","c"]
@@ -39,6 +63,17 @@ class TestHirsute < Test::Unit::TestCase
     a_count = (results.select {|item| item == 'a'}).length
     assert(a_count > 855 && a_count < 945)
   end
+  
+  def testGeneratorBlockRunWithinInstance
+     template = make_template("testGeneratorBlockRunWithinInstance") {
+        has :id => counter(3),
+            :triple => depending_on(:id,
+                                    Hirsute::DEFAULT => "") {|result| id * 3}
+     }
+     obj = template.make
+     assert(obj.triple == (obj.id * 3))
+  end
+  
   
   def testOneOfGenerator
     
@@ -141,6 +176,7 @@ class TestHirsute < Test::Unit::TestCase
     template.make
     assert(coll.length == 1)
   end
+
   
   # ensure that the << operator works properly when appending a template (i.e., it makes a new object rather than appending the template)
   def testAppendWithTemplate

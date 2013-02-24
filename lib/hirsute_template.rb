@@ -82,7 +82,6 @@ module Hirsute
             
             allFields = Array.new
             obj = class_for_name(@templateName).new
-            
             # populate all the fields; traverse both collections of fields at once
             [@fieldDefs,@transients].each do |field_map|
               next if field_map.nil?

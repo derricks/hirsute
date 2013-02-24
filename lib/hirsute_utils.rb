@@ -1,8 +1,11 @@
 # various utility methods
+require 'lib/histoparse.rb'
 
 module Hirsute
   module Support
     
+    include Hirsute::HistoParse
+        
     # store a map of range objects to its constituent array. But we want to store it within the Module's eigenclass so it's shared
     # across the code base
     Hirsute::Support.instance_eval {@rangeToArray = Hash.new}
@@ -18,8 +21,11 @@ module Hirsute
     # in other words, [.9,.05,.05] would return 0 approximately 90% of the time.
     def integer_from_histogram(probabilities)
       
-      high_end = 1
-      random_value = rand
+      sum = 0
+      probabilities.each {|probability| sum = sum + probability}
+      
+      high_end = sum
+      random_value = rand * high_end
     
       final_idx = 0
       ret_val = probabilities.each_index do |idx|
@@ -37,6 +43,12 @@ module Hirsute
    end
    
    def random_item_with_histogram(list,probabilities)
+     raise "#{list.inspect} needs to have as many items as #{probabilities.inspect}" if list.length < probabilities.length 
+     puts "Warning: #{list.inspect} has more items than #{probabilities.inspect} has items; some items will never be selected." if probabilities.length < list.length
+     
+     # if probabilities is a string, parse it into an array using HistoParse and then recurse
+     return random_item_with_histogram(list,parse_histogram(probabilities).histogram_buckets) if !probabilities.nil? && probabilities.kind_of?(String)
+     
      probabilities.nil? || !probabilities.length ? list.choice : list[integer_from_histogram(probabilities)]
    end
   
