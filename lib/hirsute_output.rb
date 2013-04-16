@@ -122,6 +122,10 @@ module Hirsute
     def separator
       get_storage_option(:separator,",")
     end
+    
+    def fields_ordered
+      get_storage_option(:field_order,fields)
+    end
 
     def get_file(name)
       name + ".csv"
