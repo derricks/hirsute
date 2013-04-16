@@ -131,9 +131,7 @@ module Hirsute
       if @dependencyFields.kind_of? Array
         @dependencyFields
       else
-        containingArray = Array.new
-        containingArray << @dependencyFields
-        @dependencyFields = containingArray
+        @dependencyFields = [@dependencyFields]
         dependency_fields
       end
     end

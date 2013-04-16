@@ -291,6 +291,16 @@ class TestHirsute < Test::Unit::TestCase
     assert(template3.value == 3 && template3.name == 'z')
   end
   
+  def testRequiresField
+    template = make_template("testRequiresField") {
+      has :value => requires_field(:literal,counter(20)) {|value| self.literal = value},
+          :literal => 1
+    }
+    
+    template1 = template.make
+    assert(template1.literal == template1.value)
+  end
+  
   def testRangeArrayCaching
     range1 = 1..3
     range2 = 1..3 # ensure that the same conceptual range maps to the same array
@@ -348,6 +358,5 @@ class TestHirsute < Test::Unit::TestCase
     outputter = TestOutputter.new(collection)
     assert(outputter.fields[0] == :id)
   end
-  
   
 end

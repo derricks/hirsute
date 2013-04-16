@@ -106,6 +106,13 @@ module Hirsute
         gen
       end
       
+      # Force a generator to not run until the given fields are set
+      def requires_field(field,generator,&block)
+        # this leverages existing depending_on behavior, just passing a set of options with one path
+        options = {DEFAULT => generator}
+        depending_on(field,options,&block)
+      end
+      
     private
       # generic method for making a generator based off of a block. useful for simple cases.
       def gen_make_generator(finishProc=nil,&block)
