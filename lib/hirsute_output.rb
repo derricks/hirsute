@@ -119,6 +119,10 @@ module Hirsute
   end
   
   class CSVOutputter < Outputter
+    def separator
+      get_storage_option(:separator,",")
+    end
+
     def get_file(name)
       name + ".csv"
     end
@@ -132,12 +136,7 @@ module Hirsute
     def _outputItem(item)
       line = fields.map {|field| "\"#{item.send(field)}\""}.join(separator)
       @file.puts line
-    end
+      end
   end
-  
-  private
-    def separator
-      get_storage_option(:separator,",")
-    end
-  
+    
 end
