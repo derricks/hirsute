@@ -133,12 +133,12 @@ module Hirsute
     
     def _start
       #output header
-      header = fields.map{|field| "\"#{field}\""}.join(separator)
+      header = fields_ordered.map{|field| "\"#{field}\""}.join(separator)
       @file.puts header
     end
     
     def _outputItem(item)
-      line = fields.map {|field| "\"#{item.send(field)}\""}.join(separator)
+      line = fields_ordered.map {|field| "\"#{item.send(field)}\""}.join(separator)
       @file.puts line
       end
   end
