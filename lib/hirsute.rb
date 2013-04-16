@@ -3,16 +3,17 @@
 #   ruby hirsute.rb <filename>
 # if filename is not specified, you can use this in irb to define language items
 
-# store the absolute path of the file (if present) to ensure we don't lose track during chdirs
-ABS_HRS_FILE = File::expand_path(ARGV[0]) if ARGV[0]
-
-Dir::chdir(File::dirname(__FILE__) + "/..")
-
 require('lib/hirsute_utils.rb')
 require('lib/hirsute_template.rb')
 require('lib/hirsute_collection.rb')
 require('lib/hirsute_fixed.rb')
 require('lib/hirsute_output.rb')
+
+# store the absolute path of the file (if present) to ensure we don't lose track during chdirs
+ABS_HRS_FILE = File::expand_path(ARGV[0]) if ARGV[0]
+
+Dir::chdir(File::dirname(__FILE__) + "/..")
+
 
 include Hirsute::Support
 
