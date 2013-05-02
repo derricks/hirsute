@@ -53,6 +53,8 @@ Templates
     #users.length now equals 7
 </pre></code>
 
+* in\_this\_order - specifies a non-arbitrary ordering of fields into the output files. Especially useful for CSV output where a downstream process expects a certain format
+
 Generators
 ----------
 These are the different data generators you can attach to any given field. Note that you can always specify a literal value as well that will always get used as the value for that field. Any time you use a generator, you can also pass it a block of code that will be called with the generated value. For instance, if you want to truncate a string that could be larger than the field it's going into, or add a separator between generated results.

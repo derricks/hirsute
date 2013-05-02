@@ -37,7 +37,16 @@ module Hirsute
            class_for_name(@templateName).instance_eval {
              @fields = fieldDefs.keys
              def fields; @fields; end;
+             
+             def field_order;@fieldOrder.nil? ? @fields : @fieldOrder;end;
            }
+        end
+        
+        # specify an order for the fields to be output. defaults to @fields
+        def in_this_order(field_order)
+           class_for_name(@templateName).instance_eval {
+                @fieldOrder = field_order
+            }
         end
         
         # Define a set of Constraint objects that act as data integrity enforcers. For instance, if a field needs to be unique.

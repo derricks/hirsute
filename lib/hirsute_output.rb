@@ -13,7 +13,7 @@ module Hirsute
     def initialize(collection,options=Hash.new)
       @collection = collection
       @obj_class = Hirsute::Support.class_for_name(@collection.object_name)
-      @fields = @obj_class.fields
+      @fields = @obj_class.field_order
       @options = options
     end
     
@@ -123,22 +123,18 @@ module Hirsute
       get_storage_option(:separator,",")
     end
     
-    def fields_ordered
-      get_storage_option(:field_order,fields)
-    end
-
     def get_file(name)
       name + ".csv"
     end
     
     def _start
       #output header
-      header = fields_ordered.map{|field| "\"#{field}\""}.join(separator)
+      header = @fields.map{|field| "\"#{field}\""}.join(separator)
       @file.puts header
     end
     
     def _outputItem(item)
-      line = fields_ordered.map {|field| "\"#{item.send(field)}\""}.join(separator)
+      line = @fields.map {|field| "\"#{item.send(field)}\""}.join(separator)
       @file.puts line
       end
   end
