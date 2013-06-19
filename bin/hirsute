@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Absolute path to this script, e.g. /home/user/bin/foo.sh
+curdir=`pwd`
+SCRIPT_PATH=`dirname $0`
+cd $SCRIPT_PATH/..
+ruby lib/hirsute.rb $curdir/$1
+cd $curdir
