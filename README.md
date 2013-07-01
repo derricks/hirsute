@@ -1,11 +1,12 @@
 Hirsute
 =======
 Hirsute is a Ruby-based domain specific language for generating plausible fake data. You might need fake data for any of the following reasons:
+
 * demoing to a potential customer and providing a realistic experience
 * building a "real" database for testing (versus the often messy, inaccurate databases in dev systems)
 * building a database for load testing before a launch
 
-In Hirsute, you define a template for what an object might look like, and then generate however many copies you need. Then you can work with those collections as needed. There is a full manual, but here is a quick example to give the flavor. Say you're building a system where you have a bunch of users, and you want to build in a "friend" concept that allows each user to have 10 friends. You want to generate a random sample of data, but you think most users will only have 2-4 friends.
+In Hirsute, you define a template for what an object might look like, and then generate however many copies you need. Then you can work with those collections as needed. There is <a href="https://github.com/derricks/hirsute/blob/master/manual.md">a full manual</a>, but here is a quick example to give the flavor. Say you're building a system where you have a bunch of users, and you want to build in a "friend" concept that allows each user to have 10 friends. You want to generate a random sample of data, but you think most users will only have 2-4 friends.
 
 The relevant Hirsute script might look like this:
 
@@ -35,10 +36,24 @@ The relevant Hirsute script might look like this:
     # for each user, pick an appropriate number of friends and create the friendship objects
     foreach user do |cur_user|
       # figure out a number of friends this user might have. Pass in a histogram to steer the probability the way we want
+      
+      # while you can pass in an array of probabilities, you can also define the histogram more intuitively
+      friend_dist = <<-HIST
+      num_friends
+             0 **
+             1 **********
+             2 ******************************
+             3 ******************************
+             4 ********************
+             5 *
+             6 *
+             7 *
+             8 *
+             9 **
+            10 *
+      HIST
       # the first argument is the options to draw from, the second argument (optional) is a histogram representing distribution of probabilities
-      num_friends = pick_from([0,1,2,3,4,5,6,7,8,9,10],
-                               [0.02,0.1,0.3,0.3,0.2,0.01,0.01,0.01,0.01,0.02,0.01]
-                              )
+      num_friends = pick_from([0,1,2,3,4,5,6,7,8,9,10], HIST)
 
       # since this in Ruby, you can just write in it as needed
       (0...num_friends).each do |idx|
