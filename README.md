@@ -6,6 +6,11 @@ Hirsute is a Ruby-based domain specific language for generating plausible fake d
 * building a "real" database for testing (versus the often messy, inaccurate databases in dev systems)
 * building a database for load testing before a launch
 
+To install:
+<code><pre>
+    gem install hirsute
+</code></pre>
+
 In Hirsute, you define a template for what an object might look like, and then generate however many copies you need. Then you can work with those collections as needed. There is <a href="https://github.com/derricks/hirsute/blob/master/manual.md">a full manual</a>, but here is a quick example to give the flavor. Say you're building a system where you have a bunch of users, and you want to build in a "friend" concept that allows each user to have 10 friends. You want to generate a random sample of data, but you think most users will only have 2-4 friends.
 
 The relevant Hirsute script might look like this:
@@ -91,7 +96,7 @@ and
 
 To run this script, cd to the hirsute directory and run
 <code><pre>
-  ruby lib/hirsute.rb samples/readme.hrs
+  hirsute samples/readme.hrs
 </pre></code>
 
 Roadmap

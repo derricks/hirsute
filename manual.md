@@ -5,7 +5,7 @@ Hirsute is a Ruby DSL for defining rules that yield fake data sets. You can use 
 
 Usage
 -----
-ruby lib/hirsute.rb filename
+hirsute filename
 
 By convention, hirsute files end in .hrs, but you can pass any file you'd like to it.
 
